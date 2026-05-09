@@ -3,47 +3,52 @@ from gtts import gTTS
 import base64
 import io
 
-# --- CONFIGURATION ---
-st.set_page_config(page_title="App Bébé", page_icon="👶")
-
-# --- INITIALISATION DE L'ACCÈS ---
-if 'access_granted' not in st.session_state:
-    st.session_state.access_granted = False
-
-# --- ÉCRAN DE BLOCAGE ---
-if not st.session_state.access_granted:
+# --- 1. VÉRIFICATION DU BLOCAGE GLOBAL ---
+# L'appli vérifie dans les secrets si elle doit se couper
+# Si maintenance_mode n'existe pas ou est "off", l'appli reste ouverte.
+if st.secrets.get("maintenance_mode") == "on":
     st.markdown("""
         <style>
         .stApp { background-color: black; color: white; }
         </style>
     """, unsafe_allow_html=True)
     st.markdown("<h1 style='color: red; text-align: center; font-size: 60px;'>🛠️ MISE À JOUR</h1>", unsafe_allow_html=True)
-    st.write("### L'application revient très vite avec des nouveautés ! ✨")
-    
-    # LA BARRE POUR DÉBLOQUER
-    code = st.text_input("Entrez le code pour débloquer", type="password")
-    if code == "babar":
-        st.session_state.access_granted = True
-        st.rerun()
+    st.markdown("<p style='text-align: center; font-size: 25px;'>Reviens plus tard ! ✨</p>", unsafe_allow_html=True)
     st.stop()
 
-# --- FONCTION SON ---
+# --- 2. CONFIGURATION DE L'APPLI ---
+st.set_page_config(page_title="App Bébé", page_icon="👶")
+
 def parler(texte):
-    tts = gTTS(text=str(texte), lang='fr')
-    fp = io.BytesIO()
-    tts.write_to_fp(fp)
-    audio_b64 = base64.b64encode(fp.getvalue()).decode()
-    html_string = f'<audio autoplay src="data:audio/mp3;base64,{audio_b64}">'
-    st.markdown(html_string, unsafe_allow_html=True)
+    try:
+        tts = gTTS(text=str(texte), lang='fr')
+        fp = io.BytesIO()
+        tts.write_to_fp(fp)
+        audio_b64 = base64.b64encode(fp.getvalue()).decode()
+        html_string = f'<audio autoplay src="data:audio/mp3;base64,{audio_b64}">'
+        st.markdown(html_string, unsafe_allow_html=True)
+    except:
+        pass
 
-# --- INTERFACE (VISIBLE APRÈS DÉBLOCAGE) ---
-col1, col2 = st.columns([0.8, 0.2])
+# --- 3. COIN ADMIN DISCRET ---
+col1, col2 = st.columns([0.9, 0.1])
 with col2:
-    if st.button("🔴 Re-bloquer"):
-        st.session_state.access_granted = False
-        st.rerun()
+    if st.button("Admin", key="btn_admin"):
+        st.session_state.show_admin = not st.session_state.get('show_admin', False)
 
-st.title("👶 Mon Abécédaire Magique")
+if st.session_state.get('show_admin', False):
+    with st.expander("🔐 Zone Admin", expanded=True):
+        pwd = st.text_input("Mot de passe", type="password")
+        if pwd == "babar":
+            st.warning("Pour BLOQUER l'appli sur TOUS les téléphones :")
+            st.write("1. Va dans Settings > Secrets sur Streamlit")
+            st.write("2. Écris : maintenance_mode = 'on'")
+            if st.button("Fermer ce menu"):
+                st.session_state.show_admin = False
+                st.rerun()
+
+# --- 4. L'ALPHABET ET LES CHIFFRES ---
+st.title("👶 Mon Abécédaire")
 
 tab1, tab2 = st.tabs(["🔤 Alphabet", "🔢 Chiffres"])
 
