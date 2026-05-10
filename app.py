@@ -1,197 +1,175 @@
 import streamlit as st
-import time
+from gtts import gTTS
+import base64
+import io
+import requests
 
 # --- 1. CONFIGURATION ---
-st.set_page_config(page_title="MONDE MAGIQUE 🎈✨", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="MONDE MAGIQUE 🎈", layout="wide", initial_sidebar_state="collapsed")
 
-# Initialisation de la navigation dans l'état de la session
-if 'page' not in st.session_state:
-    st.session_state.page = 'menu'
+# Récupération de la clé Mistral
+try:
+    MISTRAL_API_KEY = st.secrets["MISTRAL_API_KEY"]
+except:
+    MISTRAL_API_KEY = None
 
-# --- 2. LE STYLE "FÊTE TOTALE" (Chargement + Site) ---
-style_total = """
-<style>
+# --- 2. IMPORT DES UNIVERS ---
+try:
+    from univers.ecole import ECOLE_DATA
+    from univers.nature import NATURE_DATA
+    from univers.monde import MONDE_DATA
+    from univers.jeux import JEUX_DATA
+except:
+    ECOLE_DATA = NATURE_DATA = MONDE_DATA = JEUX_DATA = {}
+
+# --- 3. LOGIQUE IA (DOUDOU & DÉFINITIONS) ---
+def ia_magique(prompt, mode="doudou"):
+    if not MISTRAL_API_KEY:
+        return "Branche ma clé magique !"
+    
+    system_instruction = """Tu es un doudou gentil pour enfant de 3 ans. 
+    Si mode=dico: Donne UNIQUEMENT la définition du mot de façon très simple (ex: 'Un chat est un animal qui fait miaou'). Pas de phrases complexes.
+    Si mode=doudou: Sois poli et joyeux. Phrases très courtes."""
+    
+    url = "https://api.mistral.ai/v1/chat/completions"
+    headers = {"Authorization": f"Bearer {MISTRAL_API_KEY}"}
+    data = {
+        "model": "mistral-tiny",
+        "messages": [
+            {"role": "system", "content": system_instruction},
+            {"role": "user", "content": f"Mode={mode}. Réponds à : {prompt}"}
+        ]
+    }
+    try:
+        response = requests.post(url, json=data, headers=headers)
+        return response.json()['choices'][0]['message']['content']
+    except:
+        return "Le doudou se repose..."
+
+# --- 4. DESIGN (TEXTE NOIR & ARC-EN-CIEL) ---
+st.markdown(f"""
+    <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
-
-    /* Fond Arc-en-ciel animé */
-    .stApp, .loading-screen {
+    
+    .stApp {{ 
         background: linear-gradient(-45deg, #FFD6E8, #C9F2FF, #D8FFF1, #FFF2B2);
         background-size: 400% 400%;
         animation: gradient 15s ease infinite;
-    }
-
-    /* Décorations : Ballons et Étoiles */
-    .stApp::before, .loading-screen::before {
-        content: '🎈 ✨ 🌟 🎈 🎊 🌟 🎈 ✨ 🌟 🎈 🎊 🌟';
-        position: fixed;
-        top: -100px;
-        left: 0;
-        width: 100%;
-        height: 300%;
-        font-size: 45px;
-        line-height: 180px;
-        word-spacing: 150px;
-        color: rgba(255, 255, 255, 0.45);
-        z-index: -1;
-        pointer-events: none;
-        animation: float_magic 25s linear infinite;
-    }
-
-    @keyframes gradient {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-
-    @keyframes float_magic {
-        from { transform: translateY(0); }
-        to { transform: translateY(-50%); }
-    }
-
-    /* Boutons ronds et colorés avec le style de l'image */
-    .stButton > button {
-        background: white !important;
-        border: 4px solid #8A63FF !important;
-        border-radius: 25px !important;
-        color: #8A63FF !important;
-        font-family: 'Fredoka One', cursive !important;
-        font-size: 20px !important;
-        height: 80px !important;
-        box-shadow: 0px 6px 0px #8A63FF !important;
-        margin-bottom: 10px;
-        transition: all 0.2s ease;
-    }
-
-    .stButton > button:active {
-        transform: translateY(4px);
-        box-shadow: 0px 2px 0px #8A63FF !important;
-    }
+    }}
+    @keyframes gradient {{ 0% {{ background-position: 0% 50%; }} 50% {{ background-position: 100% 50%; }} 100% {{ background-position: 0% 50%; }} }}
     
-    .stButton > button:hover {
-        background: #F0E6FF !important;
-    }
+    /* TOUT LE TEXTE EN NOIR POUR ÊTRE LISIBLE */
+    .titre-enfant, label, p, .stMarkdown, .stTextInput label {{ 
+        color: #2C3E50 !important; 
+        font-family: 'Fredoka One', cursive !important; 
+    }}
 
-    /* Titre central */
-    .titre-magique {
-        text-align: center;
-        font-family: 'Fredoka One', cursive !important;
-        font-size: 70px !important;
-        color: #8A63FF !important;
-        text-shadow: 4px 4px 0px white;
-        margin-top: 30px;
-        margin-bottom: 40px;
-    }
+    .titre-enfant {{ text-align: center; font-size: 42px !important; color: #8A63FF !important; text-shadow: 2px 2px 0px #FFFFFF; }}
+
+    /* CHAMP D'ÉCRITURE : FOND BLANC, TEXTE NOIR, BORDURE ARC-EN-CIEL */
+    input {{ 
+        color: #000000 !important; /* TEXTE QUE TU ÉCRIS EN NOIR */
+        background-color: #FFFFFF !important; 
+        border: 4px solid !important;
+        border-image: linear-gradient(to right, #FF1493, #00BFFF, #00FF7F, #FFD700) 1 !important;
+        border-radius: 15px !important;
+        font-size: 22px !important;
+    }}
     
-    /* Titre des pages internes */
-    .titre-page {
-        text-align: center;
-        font-family: 'Fredoka One', cursive !important;
-        font-size: 50px !important;
-        color: #FF6B6B !important;
-        text-shadow: 2px 2px 0px white;
-    }
-</style>
-"""
+    .stButton > button {{ 
+        background: #FFFFFF !important; 
+        border: 4px solid #8A63FF !important; 
+        border-radius: 20px !important; 
+        color: #8A63FF !important; 
+        font-family: 'Fredoka One', cursive !important; 
+        font-size: 20px !important; 
+        height: 70px !important; 
+        width: 100% !important; 
+        box-shadow: 0px 4px 0px #8A63FF !important; 
+    }}
 
-# --- 3. CHARGEMENT INITIAL ---
-if 'chargement_fini' not in st.session_state:
-    st.markdown(style_total, unsafe_allow_html=True)
-    placeholder = st.empty()
-    with placeholder.container():
-        st.markdown("""
-            <div class="loading-screen" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999;">
-                <div style="font-size: 120px; animation: bounce 1s infinite alternate;">🎁</div>
-                <h1 style="font-family: 'Fredoka One', cursive; color: #8A63FF; text-shadow: 3px 3px 0px white;">ON PRÉPARE LA MAGIE... ✨</h1>
-            </div>
-            <style>
-                @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-40px); } }
-            </style>
-        """, unsafe_allow_html=True)
-        time.sleep(2) # Réduit à 2 secondes pour être plus rapide
-    st.session_state.chargement_fini = True
-    placeholder.empty()
+    .btn-dossier button {{ background: #FFF2B2 !important; border: 5px solid #FFCC00 !important; color: #D35400 !important; box-shadow: 0px 6px 0px #FFB300 !important; }}
+    .btn-objet button {{ background: white !important; color: #2C3E50 !important; border: 3px solid #EEE !important; box-shadow: 0px 4px 0px #CCC !important; }}
+    .btn-retour button {{ background: #FF1493 !important; color: white !important; border: 4px solid white !important; box-shadow: 0px 4px 0px #C71585 !important; }}
+    </style>
+    """, unsafe_allow_html=True)
 
-# Appliquer le style global
-st.markdown(style_total, unsafe_allow_html=True)
+def parler(txt):
+    tts = gTTS(text=str(txt), lang='fr')
+    fp = io.BytesIO()
+    tts.write_to_fp(fp)
+    b64 = base64.b64encode(fp.getvalue()).decode()
+    st.markdown(f'<audio autoplay src="data:audio/mp3;base64,{b64}">', unsafe_allow_html=True)
 
-# --- 4. LOGIQUE DE NAVIGATION (LE SITE) ---
+# --- 5. NAVIGATION ---
+if 'mode' not in st.session_state: st.session_state.mode = "jeu"
+if 'slide' not in st.session_state: st.session_state.slide = 1
+if 'chemin' not in st.session_state: st.session_state.chemin = []
 
-# FONCTION POUR CHANGER DE PAGE
-def changer_page(nouvelle_page):
-    st.session_state.page = nouvelle_page
+c1, c2, c3, c4 = st.columns(4)
+with c1: 
+    if st.button("📚 ÉCOLE"): st.session_state.mode, st.session_state.slide, st.session_state.chemin = "jeu", 1, []
+with c2: 
+    if st.button("🧮 CALCULS"): st.session_state.mode = "calc"
+with c3: 
+    if st.button("📖 DÉFINITION"): st.session_state.mode = "dict" # NOM CHANGÉ ICI
+with c4: 
+    if st.button("🤖 DOUDOU IA"): st.session_state.mode = "ia"
 
-# AFFICHAGE DU MENU PRINCIPAL
-if st.session_state.page == 'menu':
+st.write("---")
+
+# --- MODES ---
+if st.session_state.mode == "calc":
+    st.markdown("<h1 class='titre-enfant'>Ma Calculatrice 🧮</h1>", unsafe_allow_html=True)
+    if st.button("⬅️ RETOUR"): st.session_state.mode = "jeu"
+    n = st.number_input("Choisis un nombre :", 0, 10)
+    if st.button("ÉCOUTER LE NOMBRE"): parler(n)
+
+elif st.session_state.mode == "dict":
+    st.markdown("<h1 class='titre-enfant'>Définition des mots 📖</h1>", unsafe_allow_html=True)
+    if st.button("⬅️ RETOUR"): st.session_state.mode = "jeu"
+    mot_saisi = st.text_input("Écris un mot pour savoir ce que c'est :")
     
-    # Ligne du haut (4 boutons)
-    col1, col2, col3, col4 = st.columns(4)
-    with col1:
-        if st.button("📚 ÉCOLE", use_container_width=True): changer_page('ecole')
-    with col2:
-        if st.button("🧮 CALCULS", use_container_width=True): changer_page('calculs')
-    with col3:
-        if st.button("📖 DÉFINITION", use_container_width=True): changer_page('definition')
-    with col4:
-        if st.button("🤖 DOUDOU IA", use_container_width=True): changer_page('doudou_ia')
+    if st.button("🌟 EXPLIQUE-MOI LE MOT"):
+        if mot_saisi:
+            definition = ia_magique(mot_saisi, mode="dico")
+            st.success(definition)
+            parler(definition)
 
-    # Titre au centre
-    st.markdown("<h1 class='titre-magique'>MONDE MAGIQUE</h1>", unsafe_allow_html=True)
+elif st.session_state.mode == "ia":
+    st.markdown("<h1 class='titre-enfant'>Doudou IA 🤖</h1>", unsafe_allow_html=True)
+    if st.button("⬅️ RETOUR"): st.session_state.mode = "jeu"
+    q = st.text_input("Pose une question à ton doudou :")
+    if st.button("PARLER AU DOUDOU"):
+        rep = ia_magique(q, mode="doudou")
+        st.info(rep)
+        parler(rep)
 
-    # Lignes du bas (2 colonnes comme sur l'image)
-    c_gauche, c_droite = st.columns(2)
-
-    with c_gauche:
-        if st.button("🔊 🔢 COMPTER (0 à 100)", use_container_width=True): changer_page('compter')
-        if st.button("📁 ➕ LES MATHS", use_container_width=True): changer_page('maths')
-        if st.button("📁 📅 LE CALENDRIER", use_container_width=True): changer_page('calendrier')
-
-    with c_droite:
-        if st.button("📁 🔤 L'ALPHABET (A-Z)", use_container_width=True): changer_page('alphabet')
-        if st.button("📁 🍎 LE MARCHÉ GÉANT", use_container_width=True): changer_page('marche')
-        
-        # Ajout d'un espace vide pour équilibrer la colonne de droite (optionnel)
-        st.write("")
-
-# --- 5. CONTENU DES DIFFÉRENTES PAGES ---
 else:
-    # Bouton de retour commun à toutes les pages
-    if st.button("⬅️ Retour au Monde Magique", use_container_width=False):
-        changer_page('menu')
-        st.rerun()
+    # Système de jeu univers
+    cols = st.columns(3)
+    btns = ["🦁 NATURE", "🌍 MONDE", "🎁 JEUX"]
+    for i, t in enumerate(btns):
+        if cols[i].button(t): st.session_state.slide, st.session_state.chemin = i + 2, []
 
-    # Affichage selon la page sélectionnée
-    if st.session_state.page == 'ecole':
-        st.markdown("<h2 class='titre-page'>Bienvenue à l'École ! 📚</h2>", unsafe_allow_html=True)
-        st.info("Mets ici le contenu de ton application École.")
+    mapping = {1: ECOLE_DATA, 2: NATURE_DATA, 3: MONDE_DATA, 4: JEUX_DATA}
+    contenu = mapping[st.session_state.slide]
+    for d in st.session_state.chemin: contenu = contenu[d]
 
-    elif st.session_state.page == 'calculs':
-        st.markdown("<h2 class='titre-page'>Place aux Calculs ! 🧮</h2>", unsafe_allow_html=True)
-        st.info("Mets ici le contenu de ton application Calculs.")
+    if st.session_state.chemin:
+        st.markdown('<div class="btn-retour">', unsafe_allow_html=True)
+        if st.button("⬅️ ON REVIENT !"): 
+            st.session_state.chemin.pop()
+            st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
 
-    elif st.session_state.page == 'definition':
-        st.markdown("<h2 class='titre-page'>Le coin des Définitions 📖</h2>", unsafe_allow_html=True)
-        st.info("Mets ici le dictionnaire ou l'outil de définition.")
-
-    elif st.session_state.page == 'doudou_ia':
-        st.markdown("<h2 class='titre-page'>Bonjour, je suis Doudou IA ! 🤖</h2>", unsafe_allow_html=True)
-        st.info("Intègre ici le chatbot ou l'assistant virtuel.")
-
-    elif st.session_state.page == 'compter':
-        st.markdown("<h2 class='titre-page'>Apprenons à compter jusqu'à 100 🔢</h2>", unsafe_allow_html=True)
-        st.info("Mets ici ton module pour apprendre à compter.")
-
-    elif st.session_state.page == 'alphabet':
-        st.markdown("<h2 class='titre-page'>L'Alphabet de A à Z 🔤</h2>", unsafe_allow_html=True)
-        st.info("Mets ici ton module pour l'alphabet.")
-
-    elif st.session_state.page == 'maths':
-        st.markdown("<h2 class='titre-page'>Les Mathématiques Faciles ➕</h2>", unsafe_allow_html=True)
-        st.info("Mets ici les exercices de maths.")
-
-    elif st.session_state.page == 'marche':
-        st.markdown("<h2 class='titre-page'>Le Marché Géant 🍎</h2>", unsafe_allow_html=True)
-        st.info("Mets ici le jeu du marché géant.")
-
-    elif st.session_state.page == 'calendrier':
-        st.markdown("<h2 class='titre-page'>Le Calendrier Magique 📅</h2>", unsafe_allow_html=True)
-        st.info("Mets ici l'outil calendrier.")
+    st.markdown(f"<h1 class='titre-enfant'>{'✨ ' + st.session_state.chemin[-1] if st.session_state.chemin else 'MONDE MAGIQUE'}</h1>", unsafe_allow_html=True)
+    
+    if isinstance(contenu, dict):
+        for k, v in contenu.items():
+            if isinstance(v, dict):
+                st.markdown('<div class="btn-dossier">', unsafe_allow_html=True)
+                if st.button(k): st.session_state.chemin.append(k); st.rerun()
+            else:
+                st.markdown('<div class="btn-objet">', unsafe_allow_html=True)
+                if st.button(k): parler(v)
