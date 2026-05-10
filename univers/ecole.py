@@ -1,4 +1,7 @@
-# DOSSIER ÉCOLE - VERSION AVEC RÉSULTATS VOCAUX CORRIGÉS
+# ==========================================
+# UNIVERS : ÉCOLE (Version Giga-Blindée)
+# ==========================================
+
 ECOLE_DATA = {
     "🔢 COMPTER (0 à 100)": [str(i) for i in range(101)],
     
@@ -10,38 +13,42 @@ ECOLE_DATA = {
 
     "➕ LES MATHS": {
         "➕ LES DOUBLES (1 à 50)": {
-            # Ici on affiche "1 + 1" sur le bouton, et l'appli dira "2"
-            f"{i} + {i}": str(i*2) for i in range(1, 51)
+            f"{i} + {i} = {i*2}": str(i*2) for i in range(1, 51)
         },
         "✖️ TABLES DE MULTIPLICATION": {
-            # On crée un dossier par table
-            f"Table de {n}": {
-                # Sur le bouton "2 x 3", l'appli dira "6"
-                f"{n} x {i}": str(n*i) for i in range(1, 11)
-            } for n in range(1, 11)
+            f"Table de {n}": {f"{n} x {i} = {n*i}": str(n*i) for i in range(1, 11)} 
+            for n in range(1, 11)
         }
     },
 
     "🍎 LE MARCHÉ GÉANT": {
         "🍓 TOUS LES FRUITS": {
-            "Abricot 🍑": "Abricot", "Ananas 🍍": "Ananas", "Banane 🍌": "Banane", 
-            "Cassis 🫐": "Cassis", "Cerise 🍒": "Cerise", "Citron 🍋": "Citron", 
-            "Clémentine 🍊": "Clémentine", "Datte 🏺": "Datte", "Figue 🍮": "Figue", 
-            "Fraise 🍓": "Fraise", "Framboise 🍓": "Framboise", "Kiwi 🥝": "Kiwi", 
-            "Litchi 🎈": "Litchi", "Mangue 🥭": "Mangue", "Melon 🍈": "Melon", 
-            "Mûre 🍇": "Mûre", "Myrtille 🫐": "Myrtille", "Noix de coco 🥥": "Noix de coco", 
-            "Orange 🍊": "Orange", "Pastèque 🍉": "Pastèque", "Pêche 🍑": "Pêche", 
-            "Poire 🍐": "Poire", "Pomme 🍎": "Pomme", "Raisin 🍇": "Raisin"
+            "Abricot 🍑": "Abricot", "Airelle 🔴": "Airelle", "Amande 🫘": "Amande", "Ananas 🍍": "Ananas", 
+            "Avocat 🥑": "Avocat", "Banane 🍌": "Banane", "Cacao 🍫": "Cacao", "Cassis 🫐": "Cassis", 
+            "Cerise 🍒": "Cerise", "Châtaigne 🌰": "Châtaigne", "Citron 🍋": "Citron", "Citron Vert 🍋": "Lime", 
+            "Clémentine 🍊": "Clémentine", "Coing 🍐": "Coing", "Datte 🏺": "Datte", "Figue 🍮": "Figue", 
+            "Fraise 🍓": "Fraise", "Framboise 🍓": "Framboise", "Fruit du dragon 🌵": "Pitaya", 
+            "Fruit de la passion 🍇": "Maracudja", "Goyave 🍈": "Goyave", "Grenade 🍉": "Grenade", 
+            "Groseille 🔴": "Groseille", "Kaki 🥭": "Kaki", "Kiwi 🥝": "Kiwi", "Litchi 🎈": "Litchi", 
+            "Mandarine 🍊": "Mandarine", "Mangue 🥭": "Mangue", "Melon 🍈": "Melon", "Mirabelle 🟡": "Mirabelle", 
+            "Mûre 🍇": "Mûre", "Myrtille 🫐": "Myrtille", "Noisette 🌰": "Noisette", "Noix 🥥": "Noix", 
+            "Noix de coco 🥥": "Noix de coco", "Orange 🍊": "Orange", "Pamplemousse 🍊": "Pamplemousse", 
+            "Papaye 🍈": "Papaye", "Pastèque 🍉": "Pastèque", "Pêche 🍑": "Pêche", "Poire 🍐": "Poire", 
+            "Pomme 🍎": "Pomme", "Prune 🟣": "Prune", "Raisin 🍇": "Raisin", "Rhubarbe 🌿": "Rhubarbe"
         },
         "🥦 TOUS LES LÉGUMES": {
-            "Ail 🧄": "Ail", "Artichaut 🌵": "Artichaut", "Asperge 🎋": "Asperge", 
-            "Aubergine 🍆": "Aubergine", "Betterave 🔴": "Betterave", "Brocoli 🥦": "Brocoli", 
-            "Carotte 🥕": "Carotte", "Champignon 🍄": "Champignon", "Chou 🥦": "Chou", 
-            "Citrouille 🎃": "Citrouille", "Concombre 🥒": "Concombre", "Courgette 🥒": "Courgette",
-            "Épinards 🥬": "Épinards", "Haricot vert 🫛": "Haricot vert", "Maïs 🌽": "Maïs", 
-            "Oignon 🧅": "Oignon", "Petit pois 🫛": "Petit pois", "Poivron 🫑": "Poivron", 
-            "Pomme de terre 🥔": "Pomme de terre", "Radis 🔴": "Radis", "Salade 🥗": "Salade", 
-            "Tomate 🍅": "Tomate"
+            "Ail 🧄": "Ail", "Artichaut 🌵": "Artichaut", "Asperge 🎋": "Asperge", "Aubergine 🍆": "Aubergine", 
+            "Betterave 🔴": "Betterave", "Blette 🥬": "Blette", "Brocoli 🥦": "Brocoli", "Carotte 🥕": "Carotte", 
+            "Céleri 🌿": "Céleri", "Champignon 🍄": "Champignon", "Chou 🥦": "Chou", "Chou-fleur 🥦": "Chou-fleur", 
+            "Chou de Bruxelles 🥦": "Chou de Bruxelles", "Ciboulette 🌿": "Ciboulette", "Citrouille 🎃": "Citrouille", 
+            "Concombre 🥒": "Concombre", "Courgette 🥒": "Courgette", "Cresson 🌿": "Cresson", "Échalote 🧅": "Échalote", 
+            "Endive 🥬": "Endive", "Épinards 🥬": "Épinards", "Fenouil 🌿": "Fenouil", "Fève 🫛": "Fève", 
+            "Gingembre 🫚": "Gingembre", "Haricot vert 🫛": "Haricot vert", "Lentilles 🫘": "Lentilles", 
+            "Maïs 🌽": "Maïs", "Manioc 🪵": "Manioc", "Navet 🧅": "Navet", "Oignon 🧅": "Oignon", 
+            "Panais 🥕": "Panais", "Patate douce 🍠": "Patate douce", "Persil 🌿": "Persil", 
+            "Petit pois 🫛": "Petit pois", "Poireau 🥬": "Poireau", "Poivron 🫑": "Poivron", 
+            "Pomme de terre 🥔": "Pomme de terre", "Potiron 🎃": "Potiron", "Radis 🔴": "Radis", 
+            "Radis noir 🌚": "Radis noir", "Salade 🥗": "Salade", "Topinambour 🥔": "Topinambour", "Tomate 🍅": "Tomate"
         }
     },
 
@@ -52,14 +59,12 @@ ECOLE_DATA = {
             "7️⃣ Dimanche": "Dimanche"
         },
         "📅 LES MOIS": {
-            "1 Janvier": "Janvier", "2 Février": "Février", "3 Mars": "Mars", 
-            "4 Avril": "Avril", "5 Mai": "Mai", "6 Juin": "Juin", 
-            "7 Juillet": "Juillet", "8 Août": "Août", "9 Septembre": "Septembre", 
-            "10 Octobre": "Octobre", "11 Novembre": "Novembre", "12 Décembre": "Décembre"
+            "1 Janvier": "Janvier", "2 Février": "Février", "3 Mars": "Mars", "4 Avril": "Avril",
+            "5 Mai": "Mai", "6 Juin": "Juin", "7 Juillet": "Juillet", "8 Août": "Août",
+            "9 Septembre": "Septembre", "10 Octobre": "Octobre", "11 Novembre": "Novembre", "12 Décembre": "Décembre"
         },
         "🌸 LES SAISONS": {
-            "🌸 Printemps": "C'est le Printemps", "☀️ Été": "C'est l'Été", 
-            "🍁 Automne": "C'est l'Automne", "❄️ Hiver": "C'est l'Hiver"
+            "🌸 Printemps": "Printemps", "☀️ Été": "Été", "🍁 Automne": "Automne", "❄️ Hiver": "Hiver"
         }
     }
 }
