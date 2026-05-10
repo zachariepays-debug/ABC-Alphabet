@@ -46,51 +46,84 @@ def ia_magique(prompt, mode="doudou"):
     except:
         return "Le doudou se repose..."
 
-# --- 4. DESIGN (TEXTE NOIR & ARC-EN-CIEL) ---
+# --- 4. DESIGN (LOOK BÉBÉ & CIEL MAGIQUE) ---
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
     
+    /* FOND MAGIQUE : CIEL DOUX DÉGRADÉ */
     .stApp {{ 
-        background: linear-gradient(-45deg, #FFD6E8, #C9F2FF, #D8FFF1, #FFF2B2);
-        background-size: 400% 400%;
-        animation: gradient 15s ease infinite;
+        background: linear-gradient(180deg, #A2D2FF 0%, #FEE1FF 100%);
+        background-attachment: fixed;
     }}
-    @keyframes gradient {{ 0% {{ background-position: 0% 50%; }} 50% {{ background-position: 100% 50%; }} 100% {{ background-position: 0% 50%; }} }}
-    
-    /* TOUT LE TEXTE EN NOIR POUR ÊTRE LISIBLE */
+
+    /* TEXTE STYLE ENFANT (ROND ET LISIBLE) */
     .titre-enfant, label, p, .stMarkdown, .stTextInput label {{ 
-        color: #2C3E50 !important; 
+        color: #4A4A4A !important; 
         font-family: 'Fredoka One', cursive !important; 
     }}
 
-    .titre-enfant {{ text-align: center; font-size: 42px !important; color: #8A63FF !important; text-shadow: 2px 2px 0px #FFFFFF; }}
+    .titre-enfant {{ 
+        text-align: center; 
+        font-size: 50px !important; 
+        color: #FF69B4 !important; 
+        text-shadow: 3px 3px 0px white; 
+        padding: 20px;
+    }}
 
-    /* CHAMP D'ÉCRITURE : FOND BLANC, TEXTE NOIR, BORDURE ARC-EN-CIEL */
-    input {{ 
-        color: #000000 !important; /* TEXTE QUE TU ÉCRIS EN NOIR */
+    /* BOUTONS "BULLES" ÉNORMES ET RONDS */
+    .stButton > button {{ 
         background-color: #FFFFFF !important; 
-        border: 4px solid !important;
-        border-image: linear-gradient(to right, #FF1493, #00BFFF, #00FF7F, #FFD700) 1 !important;
-        border-radius: 15px !important;
+        border: 6px solid #FFB6C1 !important; 
+        border-radius: 50px !important; 
+        color: #5D5D5D !important; 
+        font-family: 'Fredoka One', cursive !important; 
+        font-size: 24px !important; 
+        transition: transform 0.3s ease;
+        box-shadow: 0px 8px 15px rgba(0,0,0,0.1) !important;
+        margin-bottom: 10px;
+        height: auto !important;
+        padding: 15px 30px !important;
+    }}
+
+    .stButton > button:hover {{
+        transform: scale(1.05);
+        border-color: #87CEEB !important;
+    }}
+
+    /* CHAMPS DE TEXTE COMME DES PETITS NUAGES BLANCS */
+    input {{ 
+        color: #000000 !important;
+        background-color: rgba(255, 255, 255, 0.9) !important; 
+        border: 4px solid #BDE0FE !important;
+        border-radius: 30px !important;
+        padding: 15px !important;
         font-size: 22px !important;
+        text-align: center;
+    }}
+
+    /* COULEURS DES BOUTONS DE JEU */
+    .btn-dossier button {{ 
+        background: #FFD700 !important; 
+        border: 6px solid #FFA500 !important; 
+        color: white !important; 
     }}
     
-    .stButton > button {{ 
-        background: #FFFFFF !important; 
-        border: 4px solid #8A63FF !important; 
-        border-radius: 20px !important; 
-        color: #8A63FF !important; 
-        font-family: 'Fredoka One', cursive !important; 
-        font-size: 20px !important; 
-        height: 70px !important; 
-        width: 100% !important; 
-        box-shadow: 0px 4px 0px #8A63FF !important; 
+    .btn-objet button {{ 
+        background: #98FB98 !important; 
+        border: 6px solid #3CB371 !important; 
+        color: #2E8B57 !important; 
     }}
 
-    .btn-dossier button {{ background: #FFF2B2 !important; border: 5px solid #FFCC00 !important; color: #D35400 !important; box-shadow: 0px 6px 0px #FFB300 !important; }}
-    .btn-objet button {{ background: white !important; color: #2C3E50 !important; border: 3px solid #EEE !important; box-shadow: 0px 4px 0px #CCC !important; }}
-    .btn-retour button {{ background: #FF1493 !important; color: white !important; border: 4px solid white !important; box-shadow: 0px 4px 0px #C71585 !important; }}
+    .btn-retour button {{ 
+        background: #FF6347 !important; 
+        color: white !important; 
+        border: 6px solid #FFFFFF !important; 
+    }}
+
+    /* NETTOYAGE DE L'INTERFACE (PLUS PROPRE POUR LES PETITS) */
+    #MainMenu, footer, header {{visibility: hidden;}}
+    .stDeployButton {{display:none;}}
     </style>
     """, unsafe_allow_html=True)
 
@@ -112,9 +145,9 @@ with c1:
 with c2: 
     if st.button("🧮 CALCULS"): st.session_state.mode = "calc"
 with c3: 
-    if st.button("📖 DÉFINITION"): st.session_state.mode = "dict" # NOM CHANGÉ ICI
+    if st.button("📖 MOTS"): st.session_state.mode = "dict"
 with c4: 
-    if st.button("🤖 DOUDOU IA"): st.session_state.mode = "ia"
+    if st.button("🤖 DOUDOU"): st.session_state.mode = "ia"
 
 st.write("---")
 
@@ -126,11 +159,11 @@ if st.session_state.mode == "calc":
     if st.button("ÉCOUTER LE NOMBRE"): parler(n)
 
 elif st.session_state.mode == "dict":
-    st.markdown("<h1 class='titre-enfant'>Définition des mots 📖</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 class='titre-enfant'>Définition 📖</h1>", unsafe_allow_html=True)
     if st.button("⬅️ RETOUR"): st.session_state.mode = "jeu"
-    mot_saisi = st.text_input("Écris un mot pour savoir ce que c'est :")
+    mot_saisi = st.text_input("Écris un mot :", placeholder="Ex: Chat")
     
-    if st.button("🌟 EXPLIQUE-MOI LE MOT"):
+    if st.button("🌟 C'EST QUOI ?"):
         if mot_saisi:
             definition = ia_magique(mot_saisi, mode="dico")
             st.success(definition)
@@ -139,8 +172,8 @@ elif st.session_state.mode == "dict":
 elif st.session_state.mode == "ia":
     st.markdown("<h1 class='titre-enfant'>Doudou IA 🤖</h1>", unsafe_allow_html=True)
     if st.button("⬅️ RETOUR"): st.session_state.mode = "jeu"
-    q = st.text_input("Pose une question à ton doudou :")
-    if st.button("PARLER AU DOUDOU"):
+    q = st.text_input("Parle à ton doudou :", placeholder="Coucou !")
+    if st.button("RÉPONDRE"):
         rep = ia_magique(q, mode="doudou")
         st.info(rep)
         parler(rep)
@@ -150,11 +183,16 @@ else:
     cols = st.columns(3)
     btns = ["🦁 NATURE", "🌍 MONDE", "🎁 JEUX"]
     for i, t in enumerate(btns):
-        if cols[i].button(t): st.session_state.slide, st.session_state.chemin = i + 2, []
+        if cols[i].button(t): 
+            st.session_state.slide = i + 2
+            st.session_state.chemin = []
+            st.rerun()
 
     mapping = {1: ECOLE_DATA, 2: NATURE_DATA, 3: MONDE_DATA, 4: JEUX_DATA}
-    contenu = mapping[st.session_state.slide]
-    for d in st.session_state.chemin: contenu = contenu[d]
+    contenu = mapping.get(st.session_state.slide, {})
+    for d in st.session_state.chemin: 
+        if isinstance(contenu, dict):
+            contenu = contenu.get(d, {})
 
     if st.session_state.chemin:
         st.markdown('<div class="btn-retour">', unsafe_allow_html=True)
@@ -163,13 +201,18 @@ else:
             st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown(f"<h1 class='titre-enfant'>{'✨ ' + st.session_state.chemin[-1] if st.session_state.chemin else 'MONDE MAGIQUE'}</h1>", unsafe_allow_html=True)
+    titre = st.session_state.chemin[-1] if st.session_state.chemin else "MONDE MAGIQUE"
+    st.markdown(f"<h1 class='titre-enfant'>✨ {titre}</h1>", unsafe_allow_html=True)
     
     if isinstance(contenu, dict):
         for k, v in contenu.items():
             if isinstance(v, dict):
                 st.markdown('<div class="btn-dossier">', unsafe_allow_html=True)
-                if st.button(k): st.session_state.chemin.append(k); st.rerun()
+                if st.button(k): 
+                    st.session_state.chemin.append(k)
+                    st.rerun()
+                st.markdown('</div>', unsafe_allow_html=True)
             else:
                 st.markdown('<div class="btn-objet">', unsafe_allow_html=True)
                 if st.button(k): parler(v)
+                st.markdown('</div>', unsafe_allow_html=True)
