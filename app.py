@@ -4,17 +4,35 @@ import time
 # --- 1. CONFIGURATION ---
 st.set_page_config(page_title="MONDE MAGIQUE 🎈✨", layout="wide", initial_sidebar_state="collapsed")
 
-# --- 2. STYLE CSS (POUR LE CHARGEMENT ET LE SITE) ---
-# Ce code crée le fond arc-en-ciel + les confettis et ballons qui flottent
-style_magique = """
+# --- 2. LE STYLE "FÊTE TOTALE" (Chargement + Site) ---
+# Ce bloc CSS injecte les confettis et les ballons sur toutes les pages
+style_total = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
 
-    /* Fond animé arc-en-ciel doux */
+    /* Fond Arc-en-ciel animé qui ne s'arrête jamais */
     .stApp, .loading-screen {
         background: linear-gradient(-45deg, #FFD6E8, #C9F2FF, #D8FFF1, #FFF2B2);
         background-size: 400% 400%;
         animation: gradient 15s ease infinite;
+    }
+
+    /* Décorations : Ballons et Étoiles qui flottent en arrière-plan */
+    /* On les met sur .stApp pour qu'ils soient partout sur le site */
+    .stApp::before, .loading-screen::before {
+        content: '🎈 ✨ 🌟 🎈 ✨ 🌟 🎈 ✨ 🌟 🎈 ✨ 🌟';
+        position: fixed;
+        top: -100px;
+        left: 0;
+        width: 100%;
+        height: 300%;
+        font-size: 45px;
+        line-height: 180px;
+        word-spacing: 200px;
+        color: rgba(255, 255, 255, 0.45); /* Un peu transparent pour lire facilement */
+        z-index: -1;
+        pointer-events: none;
+        animation: float_magic 25s linear infinite;
     }
 
     @keyframes gradient {
@@ -23,100 +41,71 @@ style_magique = """
         100% { background-position: 0% 50%; }
     }
 
-    /* Décorations Confettis, Ballons et Étoiles (partout en fond) */
-    .stApp::before, .loading-screen::before {
-        content: '🎈 ✨ 🌟 🎈 ✨ 🌟 🎈 ✨ 🌟';
-        position: fixed;
-        top: -50px;
-        left: 0;
-        width: 100%;
-        height: 200%;
-        font-size: 40px;
-        line-height: 150px;
-        word-spacing: 250px;
-        color: rgba(255, 255, 255, 0.4);
-        z-index: -1;
-        pointer-events: none;
-        animation: float 20s linear infinite;
-    }
-
-    @keyframes float {
+    @keyframes float_magic {
         from { transform: translateY(0); }
         to { transform: translateY(-50%); }
     }
 
-    /* Style des boutons (gros et ronds comme sur l'image) */
+    /* Boutons ronds et colorés */
     .stButton > button {
         background: white !important;
-        border: 4px solid #8A63FF !important;
-        border-radius: 30px !important;
+        border: 5px solid #8A63FF !important;
+        border-radius: 35px !important;
         color: #8A63FF !important;
         font-family: 'Fredoka One', cursive !important;
-        font-size: 20px !important;
-        height: 80px !important;
+        font-size: 22px !important;
+        height: 90px !important;
         box-shadow: 0px 8px 0px #8A63FF !important;
-        transition: 0.2s;
+        margin-bottom: 15px;
     }
 
-    .stButton > button:hover {
-        transform: scale(1.05);
-        box-shadow: 0px 4px 0px #8A63FF !important;
+    .stButton > button:active {
+        transform: translateY(4px);
+        box-shadow: 0px 2px 0px #8A63FF !important;
     }
 
-    /* Titre magique */
-    .titre-enfant {
+    .titre-magique {
         text-align: center;
         font-family: 'Fredoka One', cursive !important;
-        font-size: 70px !important;
+        font-size: 60px !important;
         color: #8A63FF !important;
-        text-shadow: 4px 4px 0px white;
-        margin-bottom: 50px;
+        text-shadow: 3px 3px 0px white;
     }
 </style>
 """
 
-# --- 3. PAGE DE CHARGEMENT ---
+# --- 3. CHARGEMENT (Avec le même décor) ---
 if 'chargement_fini' not in st.session_state:
-    st.markdown(style_magique, unsafe_allow_html=True)
+    st.markdown(style_total, unsafe_allow_html=True)
     placeholder = st.empty()
-    
     with placeholder.container():
-        # HTML de l'écran de chargement
         st.markdown("""
             <div class="loading-screen" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999;">
-                <div style="font-size: 150px; animation: bounce 1s infinite alternate;">🎈</div>
-                <h1 style="font-family: 'Fredoka One', cursive; color: #8A63FF; text-shadow: 3px 3px 0px white;">LA MAGIE ARRIVE...</h1>
-                <div style="width: 300px; height: 20px; background: white; border-radius: 10px; overflow: hidden; border: 3px solid #8A63FF;">
-                    <div style="width: 100%; height: 100%; background: linear-gradient(90deg, #FF1493, #00BFFF, #00FF7F, #FFD700); animation: progress 3s linear infinite;"></div>
-                </div>
-                <style>
-                    @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-50px); } }
-                    @keyframes progress { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
-                </style>
+                <div style="font-size: 120px; animation: bounce 1s infinite alternate;">🎁</div>
+                <h1 style="font-family: 'Fredoka One', cursive; color: #8A63FF; text-shadow: 3px 3px 0px white;">ON PRÉPARE LES JEUX... ✨</h1>
             </div>
+            <style>
+                @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-40px); } }
+            </style>
         """, unsafe_allow_html=True)
-        time.sleep(4) # Durée du chargement
-    
+        time.sleep(3)
     st.session_state.chargement_fini = True
     placeholder.empty()
 
-# --- 4. LE SITE (CONTENU) ---
-st.markdown(style_magique, unsafe_allow_html=True)
+# --- 4. LE SITE (Toujours avec le décor) ---
+st.markdown(style_total, unsafe_allow_html=True)
 
-st.markdown("<h1 class='titre-enfant'>MONDE MAGIQUE</h1>", unsafe_allow_html=True)
+st.markdown("<h1 class='titre-magique'>MONDE MAGIQUE ✨</h1>", unsafe_allow_html=True)
 
-# Grille de boutons comme sur ton image
-col1, col2 = st.columns(2)
+# Disposition des boutons
+c1, c2 = st.columns(2)
 
-with col1:
+with c1:
     st.button("📚 ÉCOLE", use_container_width=True)
     st.button("🧮 CALCULS", use_container_width=True)
-    st.button("🔊 COMPTER (0 à 100)", use_container_width=True)
-    st.button("📁 LES MATHS", use_container_width=True)
-    st.button("📁 LE CALENDRIER", use_container_width=True)
+    st.button("🔊 COMPTER", use_container_width=True)
 
-with col2:
-    st.button("📖 DÉFINITION", use_container_width=True)
+with c2:
     st.button("🤖 DOUDOU IA", use_container_width=True)
-    st.button("📁 L'ALPHABET (A-Z)", use_container_width=True)
-    st.button("🍎 LE MARCHÉ GÉANT", use_container_width=True)
+    st.button("📖 DÉFINITION", use_container_width=True)
+    st.button("🍎 LE MARCHÉ", use_container_width=True)
