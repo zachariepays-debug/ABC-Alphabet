@@ -24,99 +24,72 @@ except:
 
 # --- 3. LOGIQUE IA ---
 def ia_magique(prompt, mode="doudou"):
-    if not MISTRAL_API_KEY:
-        return "Branche ma clé magique !"
-    system_instruction = "Tu es un doudou gentil pour enfant. Phrases courtes et joyeuses."
+    if not MISTRAL_API_KEY: return "Clé magique ?"
+    system_instruction = "Tu es un doudou gentil. Phrases très courtes."
     url = "https://api.mistral.ai/v1/chat/completions"
     headers = {"Authorization": f"Bearer {MISTRAL_API_KEY}"}
-    data = {
-        "model": "mistral-tiny",
-        "messages": [
-            {"role": "system", "content": system_instruction},
-            {"role": "user", "content": f"Mode={mode}. Réponds à : {prompt}"}
-        ]
-    }
+    data = {"model": "mistral-tiny", "messages": [{"role": "system", "content": system_instruction}, {"role": "user", "content": f"Mode={mode}. {prompt}"}]}
     try:
         response = requests.post(url, json=data, headers=headers)
         return response.json()['choices'][0]['message']['content']
-    except:
-        return "Le doudou se repose..."
+    except: return "Le doudou dort..."
 
-# --- 4. DESIGN OPTIMISÉ TÉLÉPHONE (FÊTE & BALLONS) ---
+# --- 4. DESIGN "ZERO SCROLL" (TOUT SUR UNE PAGE) ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
     
-    /* LE FOND */
-    .stApp { 
-        background: linear-gradient(135deg, #E0F7FA 0%, #F3E5F5 50%, #FFF9C4 100%);
-    }
+    .stApp { background: linear-gradient(135deg, #E0F7FA 0%, #F3E5F5 50%, #FFF9C4 100%); }
 
-    /* BALLONS ADAPTATIFS */
-    .stApp::before {
-        content: '🎈'; position: fixed; top: 5%; left: 2%; font-size: 40px; animation: float 6s ease-in-out infinite; z-index: 0;
-    }
-    .stApp::after {
-        content: '🎈'; position: fixed; bottom: 5%; right: 2%; font-size: 45px; animation: float 8s ease-in-out infinite; z-index: 0;
-    }
-    
-    @keyframes float {
-        0%, 100% { transform: translateY(0) rotate(0deg); }
-        50% { transform: translateY(-15px) rotate(5deg); }
-    }
-
-    /* CONTENEUR PRINCIPAL RESPONSIVE */
+    /* Réduction drastique des marges Streamlit */
     .block-container {
-        background: rgba(255, 255, 255, 0.3);
-        border-radius: 25px;
-        padding: 15px !important;
-        margin-top: 10px;
+        padding-top: 10px !important;
+        padding-bottom: 0px !important;
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        max-width: 100%;
     }
 
-    /* TITRE ADAPTÉ AUX PETITS ÉCRANS */
+    /* TITRE COMPACT */
     .titre-enfant { 
         text-align: center; 
         font-family: 'Fredoka One', cursive !important;
         color: #9575CD !important; 
-        text-shadow: 2px 2px 0px white;
-        line-height: 1.1;
+        font-size: 28px !important;
+        margin-bottom: 5px !important;
+        text-shadow: 1px 1px 0px white;
     }
 
-    /* TAILLES DE TEXTE SELON L'ÉCRAN */
-    @media (max-width: 600px) {
-        .titre-enfant { font-size: 35px !important; }
-        .stButton > button { height: 60px !important; font-size: 16px !important; margin-bottom: 10px !important; }
-        .decor { display: none; } /* On enlève les petits décors sur mobile pour ne pas gêner */
-    }
-    @media (min-width: 601px) {
-        .titre-enfant { font-size: 60px !important; }
-        .stButton > button { height: 80px !important; font-size: 22px !important; }
+    /* FORCE LES BOUTONS EN 2 COLONNES SUR MOBILE */
+    [data-testid="column"] {
+        width: 48% !important;
+        flex: 1 1 45% !important;
+        min-width: 45% !important;
+        display: inline-block !important;
+        margin: 1% !important;
     }
 
-    /* BOUTONS STYLE "IMAGE" */
+    /* STYLE DES BOUTONS PLUS PETITS */
     .stButton > button { 
         background: white !important; 
-        border: 4px solid #9575CD !important; 
-        border-radius: 25px !important; 
+        border: 3px solid #9575CD !important; 
+        border-radius: 20px !important; 
         color: #5E35B1 !important; 
         font-family: 'Fredoka One', cursive !important; 
+        font-size: 14px !important; 
+        height: 50px !important; /* Hauteur réduite pour tout voir */
         width: 100% !important; 
-        box-shadow: 0px 5px 0px #D1C4E9 !important; 
-        transition: 0.2s;
-    }
-    
-    .stButton > button:active {
-        transform: translateY(4px);
-        box-shadow: 0px 1px 0px #D1C4E9 !important;
+        box-shadow: 0px 3px 0px #D1C4E9 !important; 
+        padding: 0px !important;
     }
 
-    /* CHAMPS DE TEXTE */
-    input { 
-        border-radius: 15px !important; 
-        font-family: 'Fredoka One', cursive !important;
-        font-size: 18px !important;
-    }
+    /* BALLON DÉCORATIF FIXE */
+    .ballon { position: fixed; bottom: 10px; right: 10px; font-size: 30px; z-index: 10; }
+    
+    /* Cache les éléments inutiles de Streamlit sur mobile */
+    #MainMenu, footer, header {visibility: hidden;}
     </style>
+    <div class="ballon">🎈</div>
     """, unsafe_allow_html=True)
 
 def parler(txt):
@@ -126,62 +99,41 @@ def parler(txt):
     b64 = base64.b64encode(fp.getvalue()).decode()
     st.markdown(f'<audio autoplay src="data:audio/mp3;base64,{b64}">', unsafe_allow_html=True)
 
-# --- 5. NAVIGATION ---
-# Utilisation de colonnes qui s'adaptent mieux
-c1, c2, c3, c4 = st.columns(4)
+# --- 5. NAVIGATION COMPACTE (2x2) ---
+c1, c2 = st.columns(2)
 with c1: 
     if st.button("📚 ECOLE"): st.session_state.mode, st.session_state.slide, st.session_state.chemin = "jeu", 1, []
+    if st.button("📖 DICO"): st.session_state.mode = "dict"
 with c2: 
     if st.button("🧮 CALC"): st.session_state.mode = "calc"
-with c3: 
-    if st.button("📖 DICO"): st.session_state.mode = "dict"
-with c4: 
     if st.button("🤖 IA"): st.session_state.mode = "ia"
 
 st.markdown("<h1 class='titre-enfant'>MONDE MAGIQUE</h1>", unsafe_allow_html=True)
 
-# --- MODES ---
-if st.session_state.mode == "calc":
-    if st.button("⬅️ RETOUR"): st.session_state.mode = "jeu"
-    n = st.number_input("Nombre :", 0, 10)
-    if st.button("ÉCOUTER"): parler(n)
+# --- BOUTONS DES UNIVERS (Ligne de 3) ---
+u1, u2, u3 = st.columns(3)
+# On force le style pour que ces 3 là soient sur la même ligne
+st.markdown("<style>[data-testid='stHorizontalBlock'] div { width: 33% !important; }</style>", unsafe_allow_html=True)
 
-elif st.session_state.mode == "dict":
-    if st.button("⬅️ RETOUR"): st.session_state.mode = "jeu"
-    mot_saisi = st.text_input("Un mot :")
-    if st.button("🌟 EXPLIQUE"):
-        if mot_saisi:
-            definition = ia_magique(mot_saisi, mode="dico")
-            st.success(definition); parler(definition)
+if u1.button("🦁 NAT"): st.session_state.slide, st.session_state.chemin = 2, []
+if u2.button("🌍 MON"): st.session_state.slide, st.session_state.chemin = 3, []
+if u3.button("🎁 JEU"): st.session_state.slide, st.session_state.chemin = 4, []
 
-elif st.session_state.mode == "ia":
-    if st.button("⬅️ RETOUR"): st.session_state.mode = "jeu"
-    q = st.text_input("Ta question :")
-    if st.button("PARLER AU DOUDOU"):
-        rep = ia_magique(q, mode="doudou")
-        st.info(rep); parler(rep)
+# --- CONTENU DYNAMIQUE ---
+mapping = {1: ECOLE_DATA, 2: NATURE_DATA, 3: MONDE_DATA, 4: JEUX_DATA}
+contenu = mapping.get(st.session_state.slide, {})
+for d in st.session_state.chemin: contenu = contenu.get(d, {})
 
-else:
-    # Navigation dans les dossiers
-    mapping = {1: ECOLE_DATA, 2: NATURE_DATA, 3: MONDE_DATA, 4: JEUX_DATA}
-    
-    # Boutons des univers principaux
-    col_u1, col_u2, col_u3 = st.columns(3)
-    if col_u1.button("🦁 NATURE"): st.session_state.slide, st.session_state.chemin = 2, []
-    if col_u2.button("🌍 MONDE"): st.session_state.slide, st.session_state.chemin = 3, []
-    if col_u3.button("🎁 JEUX"): st.session_state.slide, st.session_state.chemin = 4, []
+if st.session_state.chemin:
+    if st.button("⬅️ RETOUR"): st.session_state.chemin.pop(); st.rerun()
 
-    contenu = mapping.get(st.session_state.slide, {})
-    for d in st.session_state.chemin: contenu = contenu.get(d, {})
-
-    if st.session_state.chemin:
-        if st.button("⬅️ RETOUR"): st.session_state.chemin.pop(); st.rerun()
-
-    st.write(f"### ✨ {st.session_state.chemin[-1] if st.session_state.chemin else ''}")
-    
-    if isinstance(contenu, dict):
-        # On affiche les boutons un par un pour qu'ils soient bien gros sur mobile
-        for k, v in contenu.items():
+# Affichage en grille de 2 colonnes pour les dossiers/objets
+if isinstance(contenu, dict):
+    # On crée des colonnes dynamiques pour éviter l'effet "liste infinie"
+    grid_cols = st.columns(2)
+    for idx, (k, v) in enumerate(contenu.items()):
+        target_col = grid_cols[idx % 2]
+        with target_col:
             if isinstance(v, dict):
                 if st.button(f"📁 {k}"): 
                     st.session_state.chemin.append(k)
