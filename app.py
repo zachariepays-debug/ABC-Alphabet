@@ -6,37 +6,64 @@ import requests
 import time
 
 # --- 1. CONFIGURATION ---
-st.set_page_config(page_title="MONDE MAGIQUE 🎈", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="MONDE MAGIQUE 🎈✨", layout="wide", initial_sidebar_state="collapsed")
 
+# Récupération de la clé Mistral
 try:
     MISTRAL_API_KEY = st.secrets["MISTRAL_API_KEY"]
 except:
     MISTRAL_API_KEY = None
 
-# --- 2. ÉCRAN DE CHARGEMENT ARC-EN-CIEL ---
+# --- 2. ÉCRAN DE CHARGEMENT ARC-EN-CIEL (5 SECONDES) ---
 if 'chargement_fini' not in st.session_state:
     placeholder = st.empty()
     with placeholder.container():
         st.markdown("""
             <style>
             @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
-            .loading-screen {
+            
+            /* Fond animé commun */
+            .magic-bg {
                 position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
                 background: linear-gradient(-45deg, #FFD6E8, #C9F2FF, #D8FFF1, #FFF2B2);
                 background-size: 400% 400%; animation: gradient 15s ease infinite;
-                display: flex; flex-direction: column; align-items: center; justify-content: center;
-                z-index: 9999; font-family: 'Fredoka One', cursive;
+                z-index: -2;
             }
             @keyframes gradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-            .ballon { font-size: 120px; animation: bounce 1s infinite alternate; }
+
+            /* Décorations flottantes (étoiles, ballons) */
+            .decorations {
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                pointer-events: none; z-index: -1; opacity: 0.6;
+            }
+            .item { position: absolute; animation: float 6s infinite ease-in-out; }
+            @keyframes float { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-20px) rotate(10deg); } }
+
+            /* Écran de chargement spécifique */
+            .loading-content {
+                display: flex; flex-direction: column; align-items: center; justify-content: center;
+                height: 100vh; font-family: 'Fredoka One', cursive; z-index: 9999;
+            }
+            .ballon-load { font-size: 120px; animation: bounce 1s infinite alternate; }
             @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-40px); } }
             .txt-load { color: #2C3E50; font-size: 35px; margin-top: 30px; text-shadow: 2px 2px 0px white; }
             .rainbow-bar { width: 300px; height: 20px; background: white; border-radius: 10px; margin-top: 20px; overflow: hidden; border: 3px solid #FFF; }
             .rainbow-progress { width: 100%; height: 100%; background: linear-gradient(to right, #FF1493, #00BFFF, #00FF7F, #FFD700); animation: slide 2s linear infinite; }
             @keyframes slide { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
             </style>
-            <div class="loading-screen">
-                <div class="ballon">🎈</div>
+            
+            <div class="magic-bg"></div>
+            <div class="decorations">
+                <span class="item" style="top:10%; left:10%; font-size:30px;">✨</span>
+                <span class="item" style="top:20%; left:80%; font-size:40px; animation-delay:1s;">🎈</span>
+                <span class="item" style="top:50%; left:5%; font-size:25px; animation-delay:2s;">⭐</span>
+                <span class="item" style="top:70%; left:90%; font-size:35px; animation-delay:3s;">✨</span>
+                <span class="item" style="top:85%; left:30%; font-size:30px; animation-delay:4s;">🎁</span>
+                <span class="item" style="top:40%; left:50%; font-size:20px; animation-delay:5s;">🎉</span>
+            </div>
+            
+            <div class="loading-content">
+                <div class="ballon-load">🎈</div>
                 <div class="txt-load">La magie arrive...</div>
                 <div class="rainbow-bar"><div class="rainbow-progress"></div></div>
             </div>
@@ -66,11 +93,30 @@ def ia_magique(prompt, mode="doudou"):
         return r.json()['choices'][0]['message']['content']
     except: return "Le doudou fait dodo..."
 
-# --- 5. STYLE GLOBAL ---
+# --- 5. STYLE GLOBAL DÉCORÉ ---
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
-    .stApp {{ background: linear-gradient(-45deg, #FFD6E8, #C9F2FF, #D8FFF1, #FFF2B2); background-size: 400% 400%; animation: gradient 15s ease infinite; }}
+    
+    /* Fond animé + Décorations (communs à tout le site) */
+    .stApp {{ 
+        background: linear-gradient(-45deg, #FFD6E8, #C9F2FF, #D8FFF1, #FFF2B2);
+        background-size: 400% 400%;
+        animation: gradient 15s ease infinite;
+        position: relative;
+    }}
+    
+    /* Ajout des décorations en arrière-plan */
+    .stApp::before {{
+        content: '✨ 🎈 ⭐ ✨ 🎁 🎉 ⭐ 🎈 ✨';
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        font-size: 30px; line-height: 100px; word-spacing: 150px;
+        color: rgba(255,255,255,0.4);
+        pointer-events: none; z-index: -1;
+        animation: float-bg 10s infinite linear;
+    }}
+    @keyframes float-bg {{ from { transform: translateY(0); } to { transform: translateY(-100px); } }}
+
     .titre-enfant, label, p, .stMarkdown {{ color: #2C3E50 !important; font-family: 'Fredoka One', cursive !important; }}
     .titre-enfant {{ text-align: center; font-size: 42px !important; color: #8A63FF !important; text-shadow: 2px 2px 0px #FFFFFF; }}
     input {{ color: #000 !important; background: #FFF !important; border: 4px solid; border-image: linear-gradient(to right, #FF1493, #00BFFF, #00FF7F, #FFD700) 1; border-radius: 15px; font-size: 22px; }}
@@ -105,67 +151,47 @@ with c4:
 
 st.write("---")
 
+# ... (Le reste du code pour les modes calc/dict/ia/jeu reste identique)
 if st.session_state.mode == "calc":
     st.markdown("<h1 class='titre-enfant'>Ma Calculatrice 🧮</h1>", unsafe_allow_html=True)
     if st.button("⬅️ RETOUR"): st.session_state.mode = "jeu"
     n = st.number_input("Nombre :", 0, 10)
     if st.button("ÉCOUTER"): parler(n)
-
 elif st.session_state.mode == "dict":
     st.markdown("<h1 class='titre-enfant'>Définition des mots 📖</h1>", unsafe_allow_html=True)
     if st.button("⬅️ RETOUR"): st.session_state.mode = "jeu"
     mot = st.text_input("Écris un mot :")
     if st.button("🌟 EXPLIQUE-MOI"):
         if mot: res = ia_magique(mot, "dico"); st.success(res); parler(res)
-
 elif st.session_state.mode == "ia":
     st.markdown("<h1 class='titre-enfant'>Doudou IA 🤖</h1>", unsafe_allow_html=True)
     if st.button("⬅️ RETOUR"): st.session_state.mode = "jeu"
     q = st.text_input("Question :")
     if st.button("PARLER"):
         if q: res = ia_magique(q, "doudou"); st.info(res); parler(res)
-
 else:
-    # --- LOGIQUE DES DOSSIERS RÉPARÉE ---
-    cols = st.columns(3)
-    btns = ["🦁 NATURE", "🌍 MONDE", "🎁 JEUX"]
-    for i, t in enumerate(btns):
-        if cols[i].button(t): 
-            st.session_state.slide, st.session_state.chemin = i + 2, []
-            st.rerun()
-
+    # Système de dossiers
     mapping = {1: ECOLE_DATA, 2: NATURE_DATA, 3: MONDE_DATA, 4: JEUX_DATA}
     contenu = mapping.get(st.session_state.slide, {})
-    
-    # On descend dans le dossier si l'enfant a cliqué
-    for d in st.session_state.chemin:
-        contenu = contenu.get(d, {})
+    for d in st.session_state.chemin: contenu = contenu.get(d, {})
 
     if st.session_state.chemin:
         st.markdown('<div class="btn-retour">', unsafe_allow_html=True)
-        if st.button("⬅️ ON REVIENT !"): 
-            st.session_state.chemin.pop()
-            st.rerun()
+        if st.button("⬅️ ON REVIENT !"): st.session_state.chemin.pop(); st.rerun()
         st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown(f"<h1 class='titre-enfant'>{'✨ ' + st.session_state.chemin[-1] if st.session_state.chemin else 'MONDE MAGIQUE'}</h1>", unsafe_allow_html=True)
     
-    # Affichage des boutons dossiers ou objets
     if isinstance(contenu, dict):
-        # On crée des colonnes pour que ce soit plus joli
         c_inv = st.columns(2)
         for idx, (k, v) in enumerate(contenu.items()):
             col_idx = idx % 2
-            if isinstance(v, dict):
-                with c_inv[col_idx]:
+            with c_inv[col_idx]:
+                if isinstance(v, dict):
                     st.markdown('<div class="btn-dossier">', unsafe_allow_html=True)
-                    if st.button(k, key=f"btn_{k}"): 
-                        st.session_state.chemin.append(k)
-                        st.rerun()
+                    if st.button(k, key=f"btn_{k}"): st.session_state.chemin.append(k); st.rerun()
                     st.markdown('</div>', unsafe_allow_html=True)
-            else:
-                with c_inv[col_idx]:
+                else:
                     st.markdown('<div class="btn-objet">', unsafe_allow_html=True)
-                    if st.button(k, key=f"btn_{k}"): 
-                        parler(v)
+                    if st.button(k, key=f"btn_{k}"): parler(v)
                     st.markdown('</div>', unsafe_allow_html=True)
