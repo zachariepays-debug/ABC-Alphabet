@@ -12,99 +12,94 @@ try:
     from univers.nature import NATURE_DATA
     from univers.monde import MONDE_DATA
     from univers.jeux import JEUX_DATA
-except:
-    st.error("Dossier /univers introuvable !")
+except Exception as e:
+    st.error(f"Erreur d'importation : {e}")
 
-# --- 3. DESIGN MOBILE ---
+# --- 3. DESIGN ---
 st.markdown("""
     <style>
     .stApp { background-color: #000; }
     .titre-enfant { text-align: center; color: white; font-size: 26px; font-weight: 900; margin-bottom: 20px; }
-    
     .btn-dossier button {
         background-color: #1A1A1A !important; border: 4px solid #333 !important;
         height: 100px !important; font-size: 22px !important; border-radius: 25px !important;
         color: #00FBFF !important; margin-bottom: 10px !important; width: 100% !important;
     }
-    
     .btn-objet button {
         background: linear-gradient(180deg, #00FBFF, #0077FF) !important;
         height: 90px !important; font-size: 22px !important; border-radius: 20px !important;
         color: white !important; border: none !important; margin-bottom: 10px !important; width: 100% !important;
     }
-    
     .btn-retour button {
         background-color: #FF0055 !important; height: 60px !important;
         font-size: 18px !important; border-radius: 50px !important; color: white !important;
     }
-    .nav-bar { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 4. LOGIQUE AUDIO ---
 def parler(txt):
-    tts = gTTS(text=str(txt), lang='fr')
-    fp = io.BytesIO()
-    tts.write_to_fp(fp)
-    b64 = base64.b64encode(fp.getvalue()).decode()
-    st.markdown(f'<audio autoplay src="data:audio/mp3;base64,{b64}">', unsafe_allow_html=True)
+    try:
+        tts = gTTS(text=str(txt), lang='fr')
+        fp = io.BytesIO()
+        tts.write_to_fp(fp)
+        b64 = base64.b64encode(fp.getvalue()).decode()
+        st.markdown(f'<audio autoplay src="data:audio/mp3;base64,{b64}">', unsafe_allow_html=True)
+    except: pass
 
-# --- 5. ÉTATS DE NAVIGATION ---
+# --- 4. NAVIGATION SÉCURISÉE ---
 if 'slide' not in st.session_state: st.session_state.slide = 1
-# On utilise une liste pour suivre le chemin (ex: ["LES MATHS", "TABLES"])
 if 'chemin' not in st.session_state: st.session_state.chemin = []
 
-# Barre du haut
-st.markdown('<div class="nav-bar">', unsafe_allow_html=True)
+# Barre de navigation du haut
 cols = st.columns(4)
 icons = ["📚", "🦁", "🌍", "🎁"]
 for i in range(4):
     with cols[i]:
-        if st.button(icons[i] if st.session_state.slide != i+1 else "●", key=f"n_{i}"):
+        if st.button(icons[i] if st.session_state.slide != i+1 else "●", key=f"nav_{i}"):
             st.session_state.slide = i+1
-            st.session_state.chemin = [] # On revient à la racine
+            st.session_state.chemin = []
             st.rerun()
 
-# --- 6. RÉCUPÉRATION DES DONNÉES ---
+# --- 5. CHARGEMENT DES DONNÉES ---
 mapping = {1: ECOLE_DATA, 2: NATURE_DATA, 3: MONDE_DATA, 4: JEUX_DATA}
-contenu = mapping[st.session_state.slide]
+contenu = mapping.get(st.session_state.slide, ECOLE_DATA)
 
-# On descend dans le dictionnaire selon le chemin parcouru
+# SÉCURITÉ : On vérifie que le chemin existe toujours
+nouveau_chemin = []
 for dossier in st.session_state.chemin:
-    contenu = contenu[dossier]
+    if isinstance(contenu, dict) and dossier in contenu:
+        contenu = contenu[dossier]
+        nouveau_chemin.append(dossier)
+    else:
+        # Si le dossier n'existe plus, on arrête de descendre
+        break
+st.session_state.chemin = nouveau_chemin
 
-# --- 7. AFFICHAGE DYNAMIQUE ---
-if len(st.session_state.chemin) > 0:
-    st.markdown('<div class="btn-retour">', unsafe_allow_html=True)
+# --- 6. AFFICHAGE ---
+if st.session_state.chemin:
     if st.button("⬅️ RETOUR", key="back"):
-        st.session_state.chemin.pop() # On remonte d'un niveau
+        st.session_state.chemin.pop()
         st.rerun()
-    st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown(f"<h1 class='titre-enfant'>{' > '.join(st.session_state.chemin) if st.session_state.chemin else 'CHOISIS UN DOSSIER'}</h1>", unsafe_allow_html=True)
+titre = " > ".join(st.session_state.chemin) if st.session_state.chemin else "CHOISIS UN DOSSIER"
+st.markdown(f"<h1 class='titre-enfant'>{titre}</h1>", unsafe_allow_html=True)
 
-# On vérifie si ce qu'on affiche est encore un dossier ou une liste d'objets
 if isinstance(contenu, dict):
-    # C'est un dossier (ou sous-dossier)
     for nom, valeur in contenu.items():
         if isinstance(valeur, (dict, list)) and not isinstance(valeur, str):
-            # C'est encore un dossier
             st.markdown('<div class="btn-dossier">', unsafe_allow_html=True)
             if st.button(f"📂 {nom}", key=f"d_{nom}"):
                 st.session_state.chemin.append(nom)
                 st.rerun()
             st.markdown('</div>', unsafe_allow_html=True)
         else:
-            # C'est un objet final dans un dictionnaire
             st.markdown('<div class="btn-objet">', unsafe_allow_html=True)
-            if st.button(nom, key=f"i_{nom}"):
+            if st.button(nom, key=f"obj_{nom}"):
                 parler(valeur)
             st.markdown('</div>', unsafe_allow_html=True)
-            
 elif isinstance(contenu, list):
-    # C'est une liste d'objets (comme les chiffres)
     for item in contenu:
         st.markdown('<div class="btn-objet">', unsafe_allow_html=True)
-        if st.button(str(item), key=f"l_{item}"):
+        if st.button(str(item), key=f"li_{item}"):
             parler(item)
         st.markdown('</div>', unsafe_allow_html=True)
