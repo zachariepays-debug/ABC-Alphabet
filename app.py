@@ -42,85 +42,81 @@ def ia_magique(prompt, mode="doudou"):
     except:
         return "Le doudou se repose..."
 
-# --- 4. DESIGN "FÊTE MAGIQUE" (BALLONS & CONFETTIS) ---
+# --- 4. DESIGN OPTIMISÉ TÉLÉPHONE (FÊTE & BALLONS) ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
     
-    /* LE FOND : Dégradé pastel doux */
+    /* LE FOND */
     .stApp { 
         background: linear-gradient(135deg, #E0F7FA 0%, #F3E5F5 50%, #FFF9C4 100%);
-        overflow: hidden;
     }
 
-    /* CRÉATION DES BALLONS ET CONFETTIS EN ARRIÈRE-PLAN */
+    /* BALLONS ADAPTATIFS */
     .stApp::before {
-        content: '🎈'; position: fixed; top: 10%; left: 5%; font-size: 50px; animation: float 6s ease-in-out infinite; z-index: 0;
+        content: '🎈'; position: fixed; top: 5%; left: 2%; font-size: 40px; animation: float 6s ease-in-out infinite; z-index: 0;
     }
     .stApp::after {
-        content: '🎈'; position: fixed; bottom: 15%; right: 5%; font-size: 60px; animation: float 8s ease-in-out infinite; z-index: 0;
+        content: '🎈'; position: fixed; bottom: 5%; right: 2%; font-size: 45px; animation: float 8s ease-in-out infinite; z-index: 0;
     }
     
-    /* Animation de flottement */
     @keyframes float {
         0%, 100% { transform: translateY(0) rotate(0deg); }
-        50% { transform: translateY(-20px) rotate(5deg); }
+        50% { transform: translateY(-15px) rotate(5deg); }
     }
 
-    /* CONTENEUR PRINCIPAL : On le rend invisible pour voir le décor derrière */
+    /* CONTENEUR PRINCIPAL RESPONSIVE */
     .block-container {
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 30px;
-        padding: 20px !important;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 25px;
+        padding: 15px !important;
+        margin-top: 10px;
     }
 
-    /* TITRE "MONDE MAGIQUE" */
+    /* TITRE ADAPTÉ AUX PETITS ÉCRANS */
     .titre-enfant { 
         text-align: center; 
-        font-size: 60px !important; 
-        color: #9575CD !important; 
         font-family: 'Fredoka One', cursive !important;
-        text-shadow: 3px 3px 0px white, -1px -1px 0px #7E57C2;
-        margin-bottom: 20px;
+        color: #9575CD !important; 
+        text-shadow: 2px 2px 0px white;
+        line-height: 1.1;
     }
 
-    /* BOUTONS STYLE "IMAGE" (Bords violets, fond blanc, écriture simple) */
+    /* TAILLES DE TEXTE SELON L'ÉCRAN */
+    @media (max-width: 600px) {
+        .titre-enfant { font-size: 35px !important; }
+        .stButton > button { height: 60px !important; font-size: 16px !important; margin-bottom: 10px !important; }
+        .decor { display: none; } /* On enlève les petits décors sur mobile pour ne pas gêner */
+    }
+    @media (min-width: 601px) {
+        .titre-enfant { font-size: 60px !important; }
+        .stButton > button { height: 80px !important; font-size: 22px !important; }
+    }
+
+    /* BOUTONS STYLE "IMAGE" */
     .stButton > button { 
         background: white !important; 
         border: 4px solid #9575CD !important; 
-        border-radius: 40px !important; 
+        border-radius: 25px !important; 
         color: #5E35B1 !important; 
         font-family: 'Fredoka One', cursive !important; 
-        font-size: 22px !important; 
-        height: 75px !important; 
         width: 100% !important; 
-        box-shadow: 0px 6px 0px #D1C4E9 !important; 
-        transition: 0.3s;
+        box-shadow: 0px 5px 0px #D1C4E9 !important; 
+        transition: 0.2s;
     }
     
-    .stButton > button:hover {
-        transform: scale(1.05);
-        box-shadow: 0px 8px 15px rgba(149, 117, 205, 0.3) !important;
-    }
-
-    /* DÉCORS SUPPLÉMENTAIRES (Etoiles et confettis) */
-    .decor {
-        position: fixed; font-size: 20px; pointer-events: none; opacity: 0.6;
+    .stButton > button:active {
+        transform: translateY(4px);
+        box-shadow: 0px 1px 0px #D1C4E9 !important;
     }
 
     /* CHAMPS DE TEXTE */
     input { 
-        border-radius: 20px !important; 
-        border: 3px solid #9575CD !important;
+        border-radius: 15px !important; 
         font-family: 'Fredoka One', cursive !important;
+        font-size: 18px !important;
     }
     </style>
-    
-    <div class="decor" style="top:20%; left:80%;">⭐</div>
-    <div class="decor" style="top:50%; left:10%;">✨</div>
-    <div class="decor" style="top:80%; left:40%;">❤️</div>
-    <div class="decor" style="top:15%; left:30%;">🌟</div>
-    <div class="decor" style="bottom:10%; left:70%;">🎉</div>
     """, unsafe_allow_html=True)
 
 def parler(txt):
@@ -131,51 +127,50 @@ def parler(txt):
     st.markdown(f'<audio autoplay src="data:audio/mp3;base64,{b64}">', unsafe_allow_html=True)
 
 # --- 5. NAVIGATION ---
-if 'mode' not in st.session_state: st.session_state.mode = "jeu"
-if 'slide' not in st.session_state: st.session_state.slide = 1
-if 'chemin' not in st.session_state: st.session_state.chemin = []
-
+# Utilisation de colonnes qui s'adaptent mieux
 c1, c2, c3, c4 = st.columns(4)
 with c1: 
-    if st.button("📚 ÉCOLE"): st.session_state.mode, st.session_state.slide, st.session_state.chemin = "jeu", 1, []
+    if st.button("📚 ECOLE"): st.session_state.mode, st.session_state.slide, st.session_state.chemin = "jeu", 1, []
 with c2: 
-    if st.button("🧮 CALCULS"): st.session_state.mode = "calc"
+    if st.button("🧮 CALC"): st.session_state.mode = "calc"
 with c3: 
-    if st.button("📖 DÉFINITION"): st.session_state.mode = "dict"
+    if st.button("📖 DICO"): st.session_state.mode = "dict"
 with c4: 
-    if st.button("🤖 DOUDOU IA"): st.session_state.mode = "ia"
+    if st.button("🤖 IA"): st.session_state.mode = "ia"
 
 st.markdown("<h1 class='titre-enfant'>MONDE MAGIQUE</h1>", unsafe_allow_html=True)
 
 # --- MODES ---
 if st.session_state.mode == "calc":
     if st.button("⬅️ RETOUR"): st.session_state.mode = "jeu"
-    n = st.number_input("Choisis un nombre :", 0, 10)
-    if st.button("ÉCOUTER LE NOMBRE"): parler(n)
+    n = st.number_input("Nombre :", 0, 10)
+    if st.button("ÉCOUTER"): parler(n)
 
 elif st.session_state.mode == "dict":
     if st.button("⬅️ RETOUR"): st.session_state.mode = "jeu"
-    mot_saisi = st.text_input("Écris un mot :")
-    if st.button("🌟 EXPLIQUE-MOI"):
+    mot_saisi = st.text_input("Un mot :")
+    if st.button("🌟 EXPLIQUE"):
         if mot_saisi:
             definition = ia_magique(mot_saisi, mode="dico")
             st.success(definition); parler(definition)
 
 elif st.session_state.mode == "ia":
     if st.button("⬅️ RETOUR"): st.session_state.mode = "jeu"
-    q = st.text_input("Pose une question :")
+    q = st.text_input("Ta question :")
     if st.button("PARLER AU DOUDOU"):
         rep = ia_magique(q, mode="doudou")
         st.info(rep); parler(rep)
 
 else:
-    # Système de dossiers univers
-    cols = st.columns(3)
-    btns = ["🦁 NATURE", "🌍 MONDE", "🎁 JEUX"]
-    for i, t in enumerate(btns):
-        if cols[i].button(t): st.session_state.slide, st.session_state.chemin = i + 2, []
-
+    # Navigation dans les dossiers
     mapping = {1: ECOLE_DATA, 2: NATURE_DATA, 3: MONDE_DATA, 4: JEUX_DATA}
+    
+    # Boutons des univers principaux
+    col_u1, col_u2, col_u3 = st.columns(3)
+    if col_u1.button("🦁 NATURE"): st.session_state.slide, st.session_state.chemin = 2, []
+    if col_u2.button("🌍 MONDE"): st.session_state.slide, st.session_state.chemin = 3, []
+    if col_u3.button("🎁 JEUX"): st.session_state.slide, st.session_state.chemin = 4, []
+
     contenu = mapping.get(st.session_state.slide, {})
     for d in st.session_state.chemin: contenu = contenu.get(d, {})
 
@@ -185,7 +180,7 @@ else:
     st.write(f"### ✨ {st.session_state.chemin[-1] if st.session_state.chemin else ''}")
     
     if isinstance(contenu, dict):
-        # Affichage des boutons de dossiers ou d'objets
+        # On affiche les boutons un par un pour qu'ils soient bien gros sur mobile
         for k, v in contenu.items():
             if isinstance(v, dict):
                 if st.button(f"📁 {k}"): 
