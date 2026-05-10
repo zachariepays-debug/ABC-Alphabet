@@ -54,53 +54,32 @@ st.markdown("""
     
     .stApp { background: linear-gradient(135deg, #FFDEE9 0%, #B5FFFC 100%); }
 
-    /* LE GROS TITRE 3D ARC-EN-CIEL */
+    /* TITRE ARC-EN-CIEL MAGIQUE */
     .titre-enfant {
         text-align: center;
         font-family: 'Fredoka One', cursive;
-        font-size: 80px;
-        background: linear-gradient(to right, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3);
+        font-size: 60px;
+        background: linear-gradient(to right, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3, #dd00f3);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        background-size: 200% auto;
-        animation: shine 4s linear infinite;
-        /* Effet 3D avec ombres blanches pour la visibilité */
-        text-shadow: 4px 4px 0px rgba(255,255,255,0.8), 8px 8px 0px rgba(0,0,0,0.05);
-        margin-bottom: 30px;
+        background-size: 400% 400%;
+        animation: rainbow 8s ease infinite;
+        margin-bottom: 20px;
         font-weight: bold;
     }
 
-    /* TITRE DE SECTION (MACHINE À PHRASES, ETC) */
-    .titre-section {
-        text-align: center;
-        font-family: 'Fredoka One', cursive;
-        font-size: 50px;
-        color: #5E35B1;
-        text-shadow: 3px 3px 0px white, 6px 6px 0px #D1C4E9;
-        margin-bottom: 20px;
-    }
-
-    @keyframes shine {
-        to { background-position: 200% center; }
+    @keyframes rainbow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
     }
 
     .stButton > button { 
         background: white !important; border: 4px solid #5E35B1 !important; border-radius: 25px !important; 
-        color: #5E35B1 !important; font-family: 'Fredoka One' !important; font-size: 22px !important; 
-        min-height: 80px !important; margin-bottom: 10px !important; 
-        box-shadow: 0px 8px 0px #D1C4E9 !important;
-        transition: all 0.2s;
+        color: #5E35B1 !important; font-family: 'Fredoka One' !important; font-size: 20px !important; 
+        min-height: 80px !important; margin-bottom: 10px !important; box-shadow: 0px 5px 0px #D1C4E9 !important;
     }
-    .stButton > button:active { transform: translateY(4px); box-shadow: 0px 4px 0px #D1C4E9 !important; }
-
-    .calc-screen { 
-        background: #1a1a1a; border: 6px solid #5E35B1; border-radius: 20px; 
-        padding: 20px; text-align: right; font-size: 50px; color: #D2FF72; 
-        font-family: 'Courier New', monospace; box-shadow: inset 0 0 10px #000;
-        margin-bottom: 20px;
-    }
-    
-    .stTextArea label, .stTextInput label { font-family: 'Fredoka One' !important; color: #5E35B1 !important; font-size: 20px !important; }
+    .calc-screen { background: white; border: 4px solid #5E35B1; border-radius: 15px; padding: 15px; text-align: left; font-size: 40px; color: #5E35B1; min-height: 70px; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -120,8 +99,8 @@ if st.session_state.mode == "accueil":
 # --- MODE MACHINE À PHRASES ---
 elif st.session_state.mode == "parleur":
     if st.button("🏠 ACCUEIL"): st.session_state.mode = "accueil"; st.rerun()
-    st.markdown("<h2 class='titre-section'>🗣️ LA MACHINE À PHRASES</h2>", unsafe_allow_html=True)
-    st.write("### Écris quelque chose et je vais le dire tout haut !")
+    st.markdown("<h2 style='text-align:center; color:#5E35B1; font-family:Fredoka One;'>🗣️ LA MACHINE À PHRASES</h2>", unsafe_allow_html=True)
+    st.write("Écris quelque chose et je vais le dire tout haut !")
     
     phrase = st.text_area("Tape ta phrase ici :", height=150, placeholder="Exemple: Bonjour maman, je t'aime !")
     
@@ -141,7 +120,7 @@ elif st.session_state.mode == "jeu":
             if st.button("⬅️ RETOUR"): st.session_state.chemin.pop(); st.rerun()
 
     if not st.session_state.chemin:
-        st.markdown("<h3 class='titre-section'>Que veux-tu apprendre ?</h3>", unsafe_allow_html=True)
+        st.markdown("<h3 style='text-align:center; color:#5E35B1;'>Que veux-tu apprendre ?</h3>", unsafe_allow_html=True)
         u1, u2 = st.columns(2)
         with u1:
             if st.button("🏫 L'ÉCOLE"): st.session_state.slide, st.session_state.chemin = 1, ["ECOLE"]; st.rerun()
@@ -196,17 +175,13 @@ elif st.session_state.mode == "calc":
 # --- MODE DICO ---
 elif st.session_state.mode == "dict":
     if st.button("🏠 ACCUEIL"): st.session_state.mode = "accueil"; st.rerun()
-    st.markdown("<h2 class='titre-section'>📖 LE DICO MAGIQUE</h2>", unsafe_allow_html=True)
-    m = st.text_input("Chercher un mot :")
+    m = st.text_input("Mot :")
     if st.button("🌟 VOIR"):
         if m: res = ia_magique(m, "dico"); st.write(f"### {res}"); parler(res)
 
 # --- MODE DOUDOU ---
 elif st.session_state.mode == "ia":
     if st.button("🏠 ACCUEIL"): st.session_state.mode = "accueil"; st.rerun()
-    st.markdown("<h2 class='titre-section'>🤖 PARLE À DOUDOU</h2>", unsafe_allow_html=True)
     q = st.text_input("Dis à Doudou :")
     if st.button("RÉPONDRE"):
         if q: res = ia_magique(q, "doudou"); st.info(res); parler(res)
-
-Ta nouvelle interface est maintenant prête ! Tu as des titres 3D, des boutons qui bougent quand on clique dessus, et des couleurs magnifiques partout. N'hésite pas à me dire si tu veux changer autre chose !
