@@ -1,0 +1,90 @@
+import pygame
+import random
+
+# Initialisation de Pygame
+pygame.init()
+
+# Configuration de l'écran
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 400
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption("Chrome Dino Clone")
+
+# Couleurs
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+GRAY = (200, 200, 200)
+
+# Paramètres du Dino
+DINO_WIDTH = 40
+DINO_HEIGHT = 40
+dino_x = 50
+dino_y = SCREEN_HEIGHT - DINO_HEIGHT - 10
+dino_vel_y = 0
+gravity = 0.8
+is_jumping = False
+
+# Paramètres des obstacles
+obstacle_width = 30
+obstacle_height = 50
+obstacle_x = SCREEN_WIDTH
+obstacle_y = SCREEN_HEIGHT - obstacle_height - 10
+obstacle_speed = 7
+
+# Score
+score = 0
+font = pygame.font.SysFont("Arial", 24)
+
+clock = pygame.time.Clock()
+run = True
+
+while run:
+    screen.fill(WHITE)
+    
+    # Gestion des événements
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE and not is_jumping:
+                dino_vel_y = -15
+                is_jumping = True
+
+    # Physique du saut
+    dino_y += dino_vel_y
+    dino_vel_y += gravity
+
+    # Empêcher le dino de tomber sous le sol
+    if dino_y >= SCREEN_HEIGHT - DINO_HEIGHT - 10:
+        dino_y = SCREEN_HEIGHT - DINO_HEIGHT - 10
+        is_jumping = False
+
+    # Mouvement de l'obstacle
+    obstacle_x -= obstacle_speed
+    if obstacle_x < -obstacle_width:
+        obstacle_x = SCREEN_WIDTH
+        score += 1
+        # Accélération progressive
+        obstacle_speed += 0.2
+
+    # Détection des collisions
+    dino_rect = pygame.Rect(dino_x, dino_y, DINO_WIDTH, DINO_HEIGHT)
+    obstacle_rect = pygame.Rect(obstacle_x, obstacle_y, obstacle_width, obstacle_height)
+
+    if dino_rect.colliderect(obstacle_rect):
+        print(f"Game Over! Score final: {score}")
+        run = False
+
+    # Dessin des éléments
+    pygame.draw.rect(screen, BLACK, dino_rect) # Le Dino
+    pygame.draw.rect(screen, (255, 0, 0), obstacle_rect) # L'obstacle (Cactus)
+    pygame.draw.line(screen, GRAY, (0, SCREEN_HEIGHT - 10), (SCREEN_WIDTH, SCREEN_HEIGHT - 10), 2) # Le sol
+
+    # Affichage du score
+    score_txt = font.render(f"Score: {score}", True, BLACK)
+    screen.blit(score_txt, (10, 10))
+
+    pygame.display.update()
+    clock.tick(60) # 60 FPS
+
+pygame.quit()
