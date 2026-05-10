@@ -1,180 +1,122 @@
 import streamlit as st
-import base64
 import time
 
 # --- 1. CONFIGURATION ---
-st.set_page_config(
-    page_title="MONDE MAGIQUE 🎈✨",
-    layout="wide",
-    initial_sidebar_state="collapsed",
-)
+st.set_page_config(page_title="MONDE MAGIQUE 🎈✨", layout="wide", initial_sidebar_state="collapsed")
 
-# --- 2. ÉCRAN DE CHARGEMENT ARC-EN-CIEL (5 SECONDES) ---
-if "chargement_fini" not in st.session_state:
-    placeholder = st.empty()
-    with placeholder.container():
-        st.markdown(
-            """
-            <style>
-            @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
-            
-            /* Fond animé commun */
-            .magic-bg-loading {
-                position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-                background: linear-gradient(-45deg, #FFD6E8, #C9F2FF, #D8FFF1, #FFF2B2);
-                background-size: 400% 400%; animation: gradient_bg 15s ease infinite;
-                z-index: -2;
-            }
-            
-            /* Décorations flottantes (étoiles, ballons) sur le chargement */
-            .magic-bg-loading::after {
-                content: '🎈 ✨ ⭐ 🎁 🎉';
-                position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-                font-size: 35px; line-height: 120px; word-spacing: 180px;
-                color: rgba(255,255,255,0.4); pointer-events: none; z-index: -1;
-                animation: float_bg 10s infinite linear;
-            }
-
-            @keyframes gradient_bg {
-                0% { background-position: 0% 50%; }
-                50% { background-position: 100% 50%; }
-                100% { background-position: 0% 50%; }
-            }
-            @keyframes float_bg {
-                from { transform: translateY(0); }
-                to { transform: translateY(-100px); }
-            }
-
-            /* Contenu spécifique au chargement */
-            .loading-content {
-                display: flex; flex-direction: column; align-items: center; justify-content: center;
-                height: 100vh; font-family: 'Fredoka One', cursive; z-index: 9999;
-            }
-            .ballon-load { font-size: 130px; animation: bounce_ballon 1s infinite alternate; }
-            @keyframes bounce_ballon { from { transform: translateY(0); } to { transform: translateY(-40px); } }
-            .txt-load { color: #2C3E50; font-size: 40px; margin-top: 30px; text-shadow: 2px 2px 0px white; }
-            .rainbow-bar { width: 350px; height: 25px; background: white; border-radius: 12px; margin-top: 30px; overflow: hidden; border: 4px solid #FFF; }
-            .rainbow-progress { width: 100%; height: 100%; background: linear-gradient(to right, #FF1493, #00BFFF, #00FF7F, #FFD700); animation: slide_rainbow 2s linear infinite; }
-            @keyframes slide_rainbow { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
-            </style>
-            
-            <div class="magic-bg-loading"></div>
-            <div class="loading-content">
-                <div class="ballon-load">🎈</div>
-                <div class="txt-load">Création de la magie... ✨</div>
-                <div class="rainbow-bar"><div class="rainbow-progress"></div></div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-        time.sleep(5)
-    st.session_state.chargement_fini = True
-    placeholder.empty()
-
-# --- 3. DESIGN GLOBAL DÉCORÉ (APRÈS CHARGEMENT) ---
-st.markdown(
-    """
-    <style>
+# --- 2. STYLE CSS (POUR LE CHARGEMENT ET LE SITE) ---
+# Ce code crée le fond arc-en-ciel + les confettis et ballons qui flottent
+style_magique = """
+<style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
-    
-    /* === A. FOND ARC-EN-CIEL ET DÉCORS FLOTTANTS === */
-    .stApp {
+
+    /* Fond animé arc-en-ciel doux */
+    .stApp, .loading-screen {
         background: linear-gradient(-45deg, #FFD6E8, #C9F2FF, #D8FFF1, #FFF2B2);
         background-size: 400% 400%;
-        animation: gradient_bg_app 15s ease infinite;
-        position: relative;
+        animation: gradient 15s ease infinite;
     }
 
-    @keyframes gradient_bg_app {
+    @keyframes gradient {
         0% { background-position: 0% 50%; }
         50% { background-position: 100% 50%; }
         100% { background-position: 0% 50%; }
     }
 
-    /* Décorations (étoiles, ballons, confettis) flottantes */
-    .stApp::before {
-        content: '✨ ⭐ 🎈 ✨ 🎁 ⭐ 🎉 ✨ 🎈 ⭐ ✨';
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        font-size: 35px; line-height: 120px; word-spacing: 180px;
+    /* Décorations Confettis, Ballons et Étoiles (partout en fond) */
+    .stApp::before, .loading-screen::before {
+        content: '🎈 ✨ 🌟 🎈 ✨ 🌟 🎈 ✨ 🌟';
+        position: fixed;
+        top: -50px;
+        left: 0;
+        width: 100%;
+        height: 200%;
+        font-size: 40px;
+        line-height: 150px;
+        word-spacing: 250px;
         color: rgba(255, 255, 255, 0.4);
-        pointer-events: none; z-index: -1;
-        animation: float_decorations 10s infinite linear;
+        z-index: -1;
+        pointer-events: none;
+        animation: float 20s linear infinite;
     }
 
-    @keyframes float_decorations {
+    @keyframes float {
         from { transform: translateY(0); }
-        to { transform: translateY(-100px); }
+        to { transform: translateY(-50%); }
     }
 
-    /* === B. TITRE ET TEXTES === */
-    .titre-magique {
+    /* Style des boutons (gros et ronds comme sur l'image) */
+    .stButton > button {
+        background: white !important;
+        border: 4px solid #8A63FF !important;
+        border-radius: 30px !important;
+        color: #8A63FF !important;
+        font-family: 'Fredoka One', cursive !important;
+        font-size: 20px !important;
+        height: 80px !important;
+        box-shadow: 0px 8px 0px #8A63FF !important;
+        transition: 0.2s;
+    }
+
+    .stButton > button:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 4px 0px #8A63FF !important;
+    }
+
+    /* Titre magique */
+    .titre-enfant {
         text-align: center;
         font-family: 'Fredoka One', cursive !important;
-        font-size: 65px !important;
+        font-size: 70px !important;
         color: #8A63FF !important;
-        text-shadow: 4px 4px 0px #FFFFFF, 6px 6px 0px rgba(0,0,0,0.1);
-        margin: 40px 0;
+        text-shadow: 4px 4px 0px white;
+        margin-bottom: 50px;
     }
+</style>
+"""
 
-    /* === C. BOUTONS STYLISÉS "TOY-STYLE" === */
-    /* On modifie TOUS les boutons Streamlit */
-    .stButton > button {
-        background: #FFFFFF !important;
-        color: #8A63FF !important;
-        font-family: 'Fredoka One', cursive !important;
-        font-size: 24px !important;
-        font-weight: bold !important;
-        border-radius: 25px !important;
-        border: 5px solid #8A63FF !important;
-        height: 100px !important;
-        width: 100% !important;
-        box-shadow: 0px 8px 0px #6A39D9 !important;
-        margin-bottom: 20px !important;
-        position: relative;
-        overflow: visible; /* Pour les emojis qui dépassent */
-    }
+# --- 3. PAGE DE CHARGEMENT ---
+if 'chargement_fini' not in st.session_state:
+    st.markdown(style_magique, unsafe_allow_html=True)
+    placeholder = st.empty()
+    
+    with placeholder.container():
+        # HTML de l'écran de chargement
+        st.markdown("""
+            <div class="loading-screen" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999;">
+                <div style="font-size: 150px; animation: bounce 1s infinite alternate;">🎈</div>
+                <h1 style="font-family: 'Fredoka One', cursive; color: #8A63FF; text-shadow: 3px 3px 0px white;">LA MAGIE ARRIVE...</h1>
+                <div style="width: 300px; height: 20px; background: white; border-radius: 10px; overflow: hidden; border: 3px solid #8A63FF;">
+                    <div style="width: 100%; height: 100%; background: linear-gradient(90deg, #FF1493, #00BFFF, #00FF7F, #FFD700); animation: progress 3s linear infinite;"></div>
+                </div>
+                <style>
+                    @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-50px); } }
+                    @keyframes progress { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+                </style>
+            </div>
+        """, unsafe_allow_html=True)
+        time.sleep(4) # Durée du chargement
+    
+    st.session_state.chargement_fini = True
+    placeholder.empty()
 
-    /* Effet d'enfoncement au clic */
-    .stButton > button:active {
-        box-shadow: 0px 3px 0px #6A39D9 !important;
-        transform: translateY(4px);
-    }
+# --- 4. LE SITE (CONTENU) ---
+st.markdown(style_magique, unsafe_allow_html=True)
 
-    /* === D. DÉCORATIONS INDIVIDUELLES DES BOUTONS === */
-    /* On utilise l'emoji dans le texte pour décorer, pas de CSS complexe ici pour la stabilité */
+st.markdown("<h1 class='titre-enfant'>MONDE MAGIQUE</h1>", unsafe_allow_html=True)
 
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+# Grille de boutons comme sur ton image
+col1, col2 = st.columns(2)
 
-# --- 4. AFFICHAGE DES ÉLÉMENTS DU SITE ---
+with col1:
+    st.button("📚 ÉCOLE", use_container_width=True)
+    st.button("🧮 CALCULS", use_container_width=True)
+    st.button("🔊 COMPTER (0 à 100)", use_container_width=True)
+    st.button("📁 LES MATHS", use_container_width=True)
+    st.button("📁 LE CALENDRIER", use_container_width=True)
 
-# A. Le grand titre décoré
-st.markdown("<h1 class='titre-magique'>MONDE MAGIQUE</h1>", unsafe_allow_html=True)
-
-# B. La grille des boutons (en 2 colonnes comme sur l'image)
-# On utilise des colonnes Streamlit pour reproduire la grille
-c1, c2 = st.columns(2)
-
-with c1:
-    st.button("📚 ÉCOLE", key="ecole")
-    st.button("🧮 CALCULS", key="calculs")
-    st.button("📖 DÉFINITION", key="definition")
-    st.button("🔊 COMPTER (0 à 100)", key="compter")
-    # Button avec petite étoile déco intégrée
-    st.button("📁 LES MATHS ⭐", key="maths")
-
-with c2:
-    # Button avec ballon déco intégré
-    st.button("🎈 DOUDOU IA", key="doudou")
-    # Buttons avec petite étoile déco intégrée
-    st.button("📁 L'ALPHABET (A-Z) ⭐", key="alphabet")
-    st.button("📁 LE MARCHÉ GÉANT ⭐", key="marche")
-    st.button("📁 LE CALENDRIER ⭐", key="calendrier")
-
-# --- 5. LOGIQUE DE JEU (Exemple) ---
-# (C'est ici que tu mettrais ton code pour lancer les sons, l'IA, etc.)
-if st.session_state.get("ecole"):
-    st.balloon() # Petite animation pour le fun
-    # tts_parler("Bienvenue à l'école magique !")
+with col2:
+    st.button("📖 DÉFINITION", use_container_width=True)
+    st.button("🤖 DOUDOU IA", use_container_width=True)
+    st.button("📁 L'ALPHABET (A-Z)", use_container_width=True)
+    st.button("🍎 LE MARCHÉ GÉANT", use_container_width=True)
