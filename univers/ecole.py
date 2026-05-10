@@ -1,4 +1,4 @@
-# DOSSIER ÉCOLE - VERSION CALCULS TITAN ET CALENDRIER DÉTAILLÉ
+# DOSSIER ÉCOLE - VERSION CALCULS UN PAR UN ET COMPLET
 ECOLE_DATA = {
     "🔢 COMPTER (0 à 100)": [str(i) for i in range(101)],
     
@@ -8,20 +8,14 @@ ECOLE_DATA = {
         "U": "U", "V": "V", "W": "W", "X": "X", "Y": "Y", "Z": "Z"
     },
 
-    "➕ GIGA DOUBLES (1 à 100)": {
-        "1 + 1": "2", "2 + 2": "4", "3 + 3": "6", "4 + 4": "8", "5 + 5": "10",
-        "6 + 6": "12", "7 + 7": "14", "8 + 8": "16", "9 + 9": "18", "10 + 10": "20",
-        "11 + 11": "22", "12 + 12": "24", "13 + 13": "26", "14 + 14": "28", "15 + 15": "30",
-        "16 + 16": "32", "17 + 17": "34", "18 + 18": "36", "19 + 19": "38", "20 + 20": "40",
-        "25 + 25": "50", "30 + 30": "60", "35 + 35": "70", "40 + 40": "80", "45 + 45": "90",
-        "50 + 50": "100", "75 + 75": "150", "100 + 100": "200", "200 + 200": "400", "500 + 500": "1000"
+    "➕ TOUS LES DOUBLES (1 à 50)": {
+        f"{i} + {i}": str(i*2) for i in range(1, 51)
     },
 
     "📅 LES JOURS": {
         "1️⃣ Lundi": "Lundi", "2️⃣ Mardi": "Mardi", "3️⃣ Mercredi": "Mercredi", 
         "4️⃣ Jeudi": "Jeudi", "5️⃣ Vendredi": "Vendredi", "6️⃣ Samedi": "Samedi", 
-        "7️⃣ Dimanche": "Dimanche", "🗓️ Semaine": "La semaine a sept jours",
-        "🎉 Week-end": "C'est le week-end"
+        "7️⃣ Dimanche": "Dimanche"
     },
 
     "🗓️ LES MOIS & SAISONS": {
@@ -53,12 +47,5 @@ ECOLE_DATA = {
         "🧅 Oignon": "Oignon", "🫛 Petit pois": "Petit pois", "🫑 Poivron": "Poivron", 
         "🥔 Pomme de terre": "Pomme de terre", "🔴 Radis": "Radis", "🥗 Salade": "Salade", 
         "🍅 Tomate": "Tomate"
-    },
-
-    "📐 FORMES & COULEURS": {
-        "🔴 Rouge": "Rouge", "🔵 Bleu": "Bleu", "🟢 Vert": "Vert", "🟡 Jaune": "Jaune", 
-        "🟠 Orange": "Orange", "🟣 Violet": "Violet", "⚫ Noir": "Noir", "⚪ Blanc": "Blanc",
-        "🟦 Carré": "Carré", "🔴 Rond": "Rond", "🔺 Triangle": "Triangle", "⭐ Étoile": "Étoile", 
-        "💎 Losange": "Losange", "❤️ Cœur": "Cœur", "🟩 Rectangle": "Rectangle", "🟠 Ovale": "Ovale"
     }
 }
