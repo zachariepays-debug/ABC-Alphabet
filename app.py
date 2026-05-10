@@ -4,10 +4,13 @@ import base64
 import io
 import requests
 
-# --- 1. INITIALISATION (CORRIGE L'ERREUR ATTRIBUTERROR) ---
-if 'mode' not in st.session_state: st.session_state.mode = "jeu"
-if 'slide' not in st.session_state: st.session_state.slide = 1
-if 'chemin' not in st.session_state: st.session_state.chemin = []
+# --- 1. INITIALISATION (Obligatoire pour éviter les erreurs) ---
+if 'mode' not in st.session_state: 
+    st.session_state.mode = "accueil"  # On commence maintenant par l'accueil
+if 'slide' not in st.session_state: 
+    st.session_state.slide = 1
+if 'chemin' not in st.session_state: 
+    st.session_state.chemin = []
 
 # --- 2. CONFIGURATION PAGE ---
 st.set_page_config(page_title="FÊTE MAGIQUE 🎈", layout="wide", initial_sidebar_state="collapsed")
@@ -39,28 +42,30 @@ def ia_magique(prompt, mode="doudou"):
         return response.json()['choices'][0]['message']['content']
     except: return "Le doudou dort..."
 
-# --- 5. DESIGN "GRANDE FÊTE" (BALLONS, ÉTOILES, CONFETTIS) ---
+# --- 5. DESIGN "GRANDE FÊTE" ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
     
-    /* FOND ARC-EN-CIEL DOUX */
-    .stApp { 
-        background: linear-gradient(135deg, #FFDEE9 0%, #B5FFFC 100%); 
-    }
+    .stApp { background: linear-gradient(135deg, #FFDEE9 0%, #B5FFFC 100%); }
 
-    /* TITRE MAGIQUE GÉANT */
     .titre-enfant { 
         text-align: center; 
         font-family: 'Fredoka One', cursive !important;
         color: #9575CD !important; 
-        font-size: 50px !important;
+        font-size: 55px !important;
         text-shadow: 4px 4px 0px white;
-        margin-top: -20px;
-        margin-bottom: 20px;
+        margin-top: 20px;
     }
 
-    /* BOUTONS GÉANTS POUR TÉLÉPHONE */
+    .phrase-bienvenue {
+        text-align: center;
+        font-family: 'Fredoka One', cursive !important;
+        color: #5E35B1;
+        font-size: 30px !important;
+        margin-bottom: 40px;
+    }
+
     .stButton > button { 
         background: white !important; 
         border: 5px solid #9575CD !important; 
@@ -75,34 +80,25 @@ st.markdown("""
         margin-bottom: 20px !important;
     }
 
-    .stButton > button:active {
-        transform: translateY(8px);
-        box-shadow: 0px 2px 0px #D1C4E9 !important;
-    }
+    .stButton > button:active { transform: translateY(8px); box-shadow: 0px 2px 0px #D1C4E9 !important; }
 
-    /* --- DÉCORATIONS ANIMÉES --- */
-    .ballon { position: fixed; font-size: 50px; z-index: 0; animation: monte 10s linear infinite; opacity: 0.7; }
-    .etoile { position: fixed; font-size: 30px; z-index: 0; animation: brille 2s ease-in-out infinite; opacity: 0.8; }
+    /* DÉCORATIONS */
+    .ballon { position: fixed; font-size: 50px; z-index: 0; animation: monte 12s linear infinite; opacity: 0.7; }
+    .etoile { position: fixed; font-size: 30px; z-index: 0; animation: brille 2s ease-in-out infinite; }
     
     @keyframes monte {
-        0% { transform: translateY(100vh) rotate(0deg); }
-        100% { transform: translateY(-100vh) rotate(20deg); }
+        0% { transform: translateY(110vh) rotate(0deg); }
+        100% { transform: translateY(-110vh) rotate(30deg); }
     }
-    @keyframes brille {
-        0%, 100% { transform: scale(1); opacity: 0.5; }
-        50% { transform: scale(1.3); opacity: 1; }
-    }
+    @keyframes brille { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
 
-    /* CACHER LES TRUCS MOCHES */
     #MainMenu, footer, header {visibility: hidden;}
-    .block-container { padding-top: 2rem !important; }
     </style>
 
-    <div class="ballon" style="left:5%; animation-duration: 12s;">🎈</div>
-    <div class="ballon" style="left:85%; animation-duration: 8s;">🎈</div>
-    <div class="etoile" style="top:15%; left:10%;">⭐</div>
-    <div class="etoile" style="top:40%; right:15%;">✨</div>
-    <div class="etoile" style="bottom:20%; left:20%;">🌟</div>
+    <div class="ballon" style="left:10%; animation-delay: 0s;">🎈</div>
+    <div class="ballon" style="left:80%; animation-delay: 3s;">🎈</div>
+    <div class="etoile" style="top:20%; left:5%;">⭐</div>
+    <div class="etoile" style="top:50%; right:5%;">✨</div>
     """, unsafe_allow_html=True)
 
 def parler(txt):
@@ -112,24 +108,38 @@ def parler(txt):
     b64 = base64.b64encode(fp.getvalue()).decode()
     st.markdown(f'<audio autoplay src="data:audio/mp3;base64,{b64}">', unsafe_allow_html=True)
 
-# --- 6. INTERFACE DE JEU ---
+# --- 6. LOGIQUE DES PAGES ---
 
-st.markdown("<h1 class='titre-enfant'>MONDE MAGIQUE</h1>", unsafe_allow_html=True)
+# --- PAGE D'ACCUEIL ---
+if st.session_state.mode == "accueil":
+    st.markdown("<h1 class='titre-enfant'>MONDE MAGIQUE</h1>", unsafe_allow_html=True)
+    st.markdown("<p class='phrase-bienvenue'>Bonjour ! <br> Où veux-tu aller t'amuser aujourd'hui ?</p>", unsafe_allow_html=True)
+    
+    # Gros boutons de choix
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("📚 L'ÉCOLE"):
+            st.session_state.mode = "jeu"
+            st.session_state.slide = 1
+            st.rerun()
+        if st.button("🤖 DOUDOU IA"):
+            st.session_state.mode = "ia"
+            st.rerun()
+    with col2:
+        if st.button("🧮 LES CALCULS"):
+            st.session_state.mode = "calc"
+            st.rerun()
+        if st.button("📖 LE DICO"):
+            st.session_state.mode = "dict"
+            st.rerun()
 
-# Menu du haut (Gros boutons 2x2)
-m1, m2 = st.columns(2)
-with m1:
-    if st.button("📚 ÉCOLE"): st.session_state.mode, st.session_state.slide, st.session_state.chemin = "jeu", 1, []
-    if st.button("📖 DICO"): st.session_state.mode = "dict"
-with m2:
-    if st.button("🧮 CALCUL"): st.session_state.mode = "calc"
-    if st.button("🤖 DOUDOU"): st.session_state.mode = "ia"
+# --- MODE JEU (UNIVERS) ---
+elif st.session_state.mode == "jeu":
+    if st.button("🏠 RETOUR À L'ACCUEIL"):
+        st.session_state.mode = "accueil"
+        st.rerun()
 
-st.markdown("<br>", unsafe_allow_html=True)
-
-# --- CONTENU DYNAMIQUE ---
-if st.session_state.mode == "jeu":
-    # 3 Univers principaux
+    # Les 3 Univers principaux
     u1, u2, u3 = st.columns(3)
     if u1.button("🦁 NATURE"): st.session_state.slide, st.session_state.chemin = 2, []
     if u2.button("🌍 MONDE"): st.session_state.slide, st.session_state.chemin = 3, []
@@ -144,7 +154,7 @@ if st.session_state.mode == "jeu":
             st.session_state.chemin.pop()
             st.rerun()
 
-    # Grille de contenu (2 colonnes pour téléphone)
+    # Grille de contenu
     if isinstance(contenu, dict):
         items = list(contenu.items())
         for i in range(0, len(items), 2):
@@ -163,19 +173,22 @@ if st.session_state.mode == "jeu":
                     else:
                         if st.button(f"🔊 {k}"): parler(v)
 
+# --- MODE CALCUL ---
 elif st.session_state.mode == "calc":
-    if st.button("⬅️ RETOUR"): st.session_state.mode = "jeu"
-    n = st.number_input("Nombre :", 0, 10)
+    if st.button("🏠 ACCUEIL"): st.session_state.mode = "accueil"; st.rerun()
+    n = st.number_input("Choisis un nombre :", 0, 10)
     if st.button("ÉCOUTER"): parler(n)
 
+# --- MODE DICO ---
 elif st.session_state.mode == "dict":
-    if st.button("⬅️ RETOUR"): st.session_state.mode = "jeu"
-    m = st.text_input("Mot :")
+    if st.button("🏠 ACCUEIL"): st.session_state.mode = "accueil"; st.rerun()
+    m = st.text_input("Quel mot ?")
     if st.button("🌟 EXPLIQUE"):
-        if m: d = ia_magique(m, "dico"); st.info(d); parler(d)
+        if m: d = ia_magique(m, "dico"); st.success(d); parler(d)
 
+# --- MODE IA ---
 elif st.session_state.mode == "ia":
-    if st.button("⬅️ RETOUR"): st.session_state.mode = "jeu"
-    q = st.text_input("Question :")
-    if st.button("DOUDOU ?"):
+    if st.button("🏠 ACCUEIL"): st.session_state.mode = "accueil"; st.rerun()
+    q = st.text_input("Parle au doudou :")
+    if st.button("RÉPONDRE"):
         if q: r = ia_magique(q, "doudou"); st.info(r); parler(r)
