@@ -2,65 +2,67 @@ import streamlit as st
 from gtts import gTTS
 import base64
 import io
+import random
 
 # --- CONFIGURATION ÉCRAN ---
 st.set_page_config(page_title="L'Empire des Génies", page_icon="👑", layout="wide", initial_sidebar_state="collapsed")
 
-# --- DESIGN "ULTRA-CONTRASTE & GÉANT" ---
+# --- DESIGN "VIVANT & ANIMÉ" ---
 st.markdown("""
     <style>
     #MainMenu {visibility: hidden;} header {visibility: hidden;} footer {visibility: hidden;}
     .stApp { background-color: #000000; } 
     
+    /* Animation de pulsation pour les boutons */
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+
     .stButton > button {
-        width: 100%; height: 110px !important;
-        font-size: 22px !important; font-weight: 900 !important;
-        border-radius: 25px !important;
+        width: 100%; height: 115px !important;
+        font-size: 24px !important; font-weight: 900 !important;
+        border-radius: 30px !important;
         border: 4px solid #ffffff !important;
         text-transform: uppercase;
-        margin-bottom: 10px;
+        animation: pulse 3s infinite ease-in-out;
+        transition: 0.3s !important;
     }
     
-    /* Couleurs Electriques */
-    div[data-testid="stVerticalBlock"] > div:nth-child(odd) button { background: #00FFCC !important; color: #000 !important; }
-    div[data-testid="stVerticalBlock"] > div:nth-child(even) button { background: #FF00FF !important; color: #fff !important; }
+    /* Couleurs Néons */
+    div[data-testid="stVerticalBlock"] > div:nth-child(odd) button { background: linear-gradient(45deg, #00F2FE, #4FACFE) !important; color: white !important; }
+    div[data-testid="stVerticalBlock"] > div:nth-child(even) button { background: linear-gradient(45deg, #F093FB, #F5576C) !important; color: white !important; }
     
-    .titre-giga {
-        text-align: center; color: #00FFCC; font-size: 60px !important; 
-        font-weight: 900; text-shadow: 4px 4px #FF00FF; margin-bottom: 30px;
+    /* Barre de navigation (Dots) comme sur ta photo */
+    .nav-dots {
+        display: flex; justify-content: center; margin-bottom: 20px;
     }
+    .dot {
+        height: 15px; width: 15px; background-color: #555; border-radius: 50%; display: inline-block; margin: 0 10px;
+    }
+    .active-dot { background-color: #FF0055; box-shadow: 0 0 10px #FF0055; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- LA MINE D'OR ABSOLUE (DATA) ---
+# --- BASE DE DONNÉES MASSIVE ---
 DATABASE = {
-    "🦖 Dinosaures": {
-        "Carnivores": {"🦖 T-Rex":"Tyrannosaure","🦖 Raptor":"Vélociraptor","🦖 Spino":"Spinosaure","🦖 Carno":"Carnotaure"},
-        "Herbivores": {"🦕 Diplo":"Diplodocus","🦕 Tricé":"Tricératops","🦕 Stego":"Stégosaure","🦕 Brachio":"Brachiosaure"},
-        "Ciel & Mer": {"🕊️ Ptéro":"Ptérodactyle","🌊 Mosa":"Mosasaurus","🌊 Plésio":"Plésiosaure"}
+    "🦁 Le Zoo": {
+        "Savane": {"🦁":"Lion","🐘":"Éléphant","🦒":"Girafe","🦓":"Zèbre"},
+        "Forêt": {"🦊":"Renard","🦌":"Cerf","🐺":"Loup","🐻":"Ours"},
+        "Banquise": {"🐧":"Manchot","🐻‍❄️":"Ours Polaire","🦭":"Phoque"}
     },
-    "🦁 Tous les Animaux": {
-        "Savane & Jungle": {"🦁":"Lion","🐘":"Éléphant","🦒":"Girafe","🦓":"Zèbre","🐯":"Tigre","🐵":"Singe","🦛":"Hippopotame","🦏":"Rhinocéros","🐆":"Léopard","🦍":"Gorille"},
-        "Banquise & Froid": {"🐻‍❄️":"Ours Polaire","🐧":"Manchot","🦭":"Phoque","🦌":"Renne","🐺":"Loup"},
-        "Insectes": {"🦋":"Papillon","🐝":"Abeille","🐞":"Coccinelle","🐜":"Fourmi","🕷️":"Araignée","🦗":"Criquet"}
+    "⚽ Sports & Fun": {
+        "Jeux": {"⚽":"Foot","🏀":"Basket","🎾":"Tennis","🥊":"Boxe","🚲":"Vélo"},
+        "Musique": {"🎹":"Piano","🎸":"Guitare","🥁":"Batterie","🎺":"Trompette","🎻":"Violon"}
     },
-    "🧑‍🔧 Métiers": {
-        "Secours": {"🚒":"Pompier","👮":"Policier","🧑‍⚕️":"Docteur","🚑":"Ambulancier","🚁":"Sauveteur"},
-        "Quotidien": {"🧑‍🍳":"Cuisinier","🧑‍🌾":"Fermier","🧑‍🏫":"Maître d'école","🧑‍🔧":"Mécanicien","🥖":"Boulanger","👷":"Maçon"},
-        "Rêves": {"🧑‍🚀":"Astronaute","🧑‍✈️":"Pilote","🎸":"Musicien","🎨":"Peintre","🕵️":"Détective"}
-    },
-    "🔢 Maths & Formes": {
-        "Chiffres": {str(i):str(i) for i in range(101)},
-        "Formes": {"🟦":"Carré","🔴":"Rond","🔺":"Triangle","⭐":"Étoile","💎":"Losange","❤️":"Cœur"},
-        "Calculs": {"1+1=2":"Un plus un égale deux","2+2=4":"Deux plus deux égale quatre","5+5=10":"Cinq plus cinq égale dix"}
-    },
-    "🚀 Transports": {
-        "Gros Engins": {"🚜":"Tracteur","🏗️":"Grue","🚛":"Camion","🚛":"Remorque","🧹":"Balayeuse"},
-        "Vitesse": {"🏎️":"Formule 1","🚄":"Train Rapide","🚀":"Fusée","✈️":"Avion de chasse"}
+    "🪐 Nature & Espace": {
+        "Météo": {"☀️":"Soleil","🌧️":"Pluie","⚡":"Orage","❄️":"Neige","🌈":"Arc-en-ciel"},
+        "Espace": {"🌍":"Terre","🚀":"Fusée","🌙":"Lune","🪐":"Saturne","👽":"Alien"}
     }
 }
 
-# --- LOGIQUE FONCTIONNELLE ---
+# --- LOGIQUE ---
 if 'page' not in st.session_state: st.session_state.page = "menu"
 if 'sub' not in st.session_state: st.session_state.sub = ""
 
@@ -69,7 +71,7 @@ def parler(txt):
         tts = gTTS(text=str(txt), lang='fr')
         fp = io.BytesIO()
         tts.write_to_fp(fp)
-        b64 = base64.b64encode(fp.getvalue()).decode()
+        b64 = base64.encodebytes(fp.getvalue()).decode()
         st.markdown(f'<audio autoplay src="data:audio/mp3;base64,{b64}">', unsafe_allow_html=True)
     except: pass
 
@@ -80,40 +82,49 @@ def nav(p, s=""):
 
 # --- INTERFACE ---
 
+# Affichage des "Dots" de navigation
+active = "active-dot" if st.session_state.page == "menu" else ""
+st.markdown(f"""
+    <div class="nav-dots">
+        <span class="dot {active}"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+    </div>
+    """, unsafe_allow_html=True)
+
 if st.session_state.page == "menu":
-    st.markdown("<h1 class='titre-giga'>EMPIRE GÉNIE</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align:center; color:#00F2FE;'>👑 EMPIRE ANIMÉ</h1>", unsafe_allow_html=True)
+    
     cols = st.columns(2)
-    options = list(DATABASE.keys()) + ["🔤 Alphabet"]
-    for i, opt in enumerate(options):
+    categories = list(DATABASE.keys()) + ["🔤 Alphabet", "🔢 Chiffres", "🌍 Drapeaux"]
+    
+    for i, cat in enumerate(categories):
         with cols[i % 2]:
-            if st.button(opt):
-                if opt in DATABASE: nav(opt)
-                else: nav("alphabet")
+            if st.button(cat):
+                if cat in DATABASE: nav(cat)
+                else: nav(cat.lower())
 
 elif st.session_state.page in DATABASE:
     if st.button("⬅️ MENU"): nav("menu")
-    st.markdown(f"<h1 style='color:white; text-align:center;'>{st.session_state.page}</h1>", unsafe_allow_html=True)
-    
-    content = DATABASE[st.session_state.page]
+    data_cat = DATABASE[st.session_state.page]
     
     if st.session_state.sub == "":
         cols = st.columns(2)
-        for i, sub_cat in enumerate(content.keys()):
+        for i, sub in enumerate(data_cat.keys()):
             with cols[i % 2]:
-                if st.button(sub_cat): nav(st.session_state.page, sub_cat)
+                if st.button(sub): nav(st.session_state.page, sub)
     else:
         if st.button("⬅️ RETOUR"): nav(st.session_state.page, "")
-        st.markdown(f"<h2 style='color:#00FFCC; text-align:center;'>{st.session_state.sub}</h2>", unsafe_allow_html=True)
-        items = content[st.session_state.sub]
+        items = data_cat[st.session_state.sub]
         cols = st.columns(2)
-        for i, (key, val) in enumerate(items.items()):
+        for i, (e, n) in enumerate(items.items()):
             with cols[i % 2]:
-                if st.button(f"{key}\n{val}"): parler(val)
+                if st.button(f"{e}\n{n}"): parler(n)
 
+# Sections Alphabet / Chiffres / Drapeaux (Simplifié pour l'exemple)
 elif st.session_state.page == "alphabet":
     if st.button("⬅️ MENU"): nav("menu")
-    st.markdown("<h1 style='color:white; text-align:center;'>🔤 L'ALPHABET</h1>", unsafe_allow_html=True)
     cols = st.columns(4)
-    for i, l in enumerate("ABCDEFGHIJKLMNOPQRSTUVWXYZ"):
-        with cols[i % 4]:
+    for l in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
+        with cols[random.randint(0,3)]:
             if st.button(l): parler(l)
