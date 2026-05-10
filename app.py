@@ -25,6 +25,7 @@ try:
     from univers.monde import MONDE_DATA
     from univers.jeux import JEUX_DATA
 except:
+    # Au cas où les fichiers sont absents, on crée des dictionnaires vides
     ECOLE_DATA = NATURE_DATA = MONDE_DATA = JEUX_DATA = {}
 
 # --- 4. LOGIQUE IA ---
@@ -67,20 +68,19 @@ if st.session_state.mode == "accueil":
     st.markdown("<h1 class='titre-enfant'>MONDE MAGIQUE</h1>", unsafe_allow_html=True)
     c1, c2 = st.columns(2)
     with c1:
-        if st.button("📚 ÉCOLE"): st.session_state.mode, st.session_state.slide, st.session_state.chemin = "jeu", 1, []; st.rerun()
+        # LE NOUVEAU BOUTON QUI REGROUPE TOUT
+        if st.button("🎓 APPRENTISSAGE"): 
+            st.session_state.mode = "jeu"
+            st.session_state.slide = 1 # On commence par l'écran de choix (Ecole, Nature, etc.)
+            st.session_state.chemin = []
+            st.rerun()
         if st.button("🤖 DOUDOU"): st.session_state.mode = "ia"; st.rerun()
     with c2:
         if st.button("🧮 CALCULS"): st.session_state.mode = "calc"; st.rerun()
         if st.button("📖 DICO"): st.session_state.mode = "dict"; st.rerun()
 
 elif st.session_state.mode == "jeu":
-    # On n'affiche les gros onglets QUE si on est à la racine
-    if not st.session_state.chemin:
-        u1, u2, u3 = st.columns(3)
-        if u1.button("🦁 NATURE"): st.session_state.slide = 2; st.rerun()
-        if u2.button("🌍 MONDE"): st.session_state.slide = 3; st.rerun()
-        if u3.button("🎁 JEUX"): st.session_state.slide = 4; st.rerun()
-    
+    # NAVIGATION HAUT
     col_nav1, col_nav2 = st.columns([1,1])
     with col_nav1:
         if st.button("🏠 ACCUEIL"): st.session_state.mode = "accueil"; st.rerun()
@@ -88,35 +88,58 @@ elif st.session_state.mode == "jeu":
         if st.session_state.chemin:
             if st.button("⬅️ RETOUR"): st.session_state.chemin.pop(); st.rerun()
 
-    mapping = {1: ECOLE_DATA, 2: NATURE_DATA, 3: MONDE_DATA, 4: JEUX_DATA}
-    contenu = mapping.get(st.session_state.slide, {})
-    for d in st.session_state.chemin: contenu = contenu.get(d, {})
+    # CHOIX DE L'UNIVERS (Seulement si on n'est pas encore rentré dans un dossier)
+    if not st.session_state.chemin:
+        st.markdown("<h3 style='text-align:center; color:#5E35B1;'>Que veux-tu apprendre ?</h3>", unsafe_allow_html=True)
+        u1, u2 = st.columns(2)
+        with u1:
+            if st.button("🏫 L'ÉCOLE"): st.session_state.slide = 1; st.session_state.chemin = ["ECOLE"]; st.rerun()
+            if st.button("🦁 LA NATURE"): st.session_state.slide = 2; st.session_state.chemin = ["NATURE"]; st.rerun()
+        with u2:
+            if st.button("🌍 LE MONDE"): st.session_state.slide = 3; st.session_state.chemin = ["MONDE"]; st.rerun()
+            if st.button("🎁 LES JEUX"): st.session_state.slide = 4; st.session_state.chemin = ["JEUX"]; st.rerun()
 
-    if isinstance(contenu, dict):
+    # LOGIQUE DE RÉCUPÉRATION DES DONNÉES
+    # On crée un dictionnaire maître pour la navigation
+    MASTER_DATA = {
+        "ECOLE": ECOLE_DATA,
+        "NATURE": NATURE_DATA,
+        "MONDE": MONDE_DATA,
+        "JEUX": JEUX_DATA
+    }
+    
+    contenu = MASTER_DATA
+    for d in st.session_state.chemin:
+        if isinstance(contenu, dict):
+            contenu = contenu.get(d, {})
+
+    # AFFICHAGE DES DOSSIERS ET SONS
+    if isinstance(contenu, dict) and st.session_state.chemin:
         items = list(contenu.items())
         for i in range(0, len(items), 2):
             ca, cb = st.columns(2)
             with ca:
                 k, v = items[i]
-                if st.button(f"{'📁' if isinstance(v, dict) else '🔊'} {k}"):
+                type_icon = "📁" if isinstance(v, dict) else "🔊"
+                if st.button(f"{type_icon} {k}"):
                     if isinstance(v, dict): st.session_state.chemin.append(k); st.rerun()
                     else: parler(v)
             if i + 1 < len(items):
                 with cb:
                     k, v = items[i+1]
-                    if st.button(f"{'📁' if isinstance(v, dict) else '🔊'} {k}"):
+                    type_icon = "📁" if isinstance(v, dict) else "🔊"
+                    if st.button(f"{type_icon} {k}"):
                         if isinstance(v, dict): st.session_state.chemin.append(k); st.rerun()
                         else: parler(v)
 
+# --- LES MODES CALCULS / DICO / IA RESTENT LES MÊMES (OPTIMISÉS MOBILE) ---
 elif st.session_state.mode == "calc":
     if st.button("🏠 QUITTER"): st.session_state.mode = "accueil"; st.session_state.calc_val = ""; st.rerun()
-    
-    # Zone de saisie téléphone + affichage
     st.markdown(f"<div class='calc-screen'>{st.session_state.calc_val if st.session_state.calc_val else '0'}</div>", unsafe_allow_html=True)
-    val_clavier = st.text_input("Tape ici avec ton téléphone :", key="phone_input")
-    if val_clavier: st.session_state.calc_val = val_clavier # Permet d'écrire directement
+    
+    # Input invisible pour clavier téléphone
+    st.text_input("Clavier téléphone :", key="phone_input", on_change=lambda: st.session_state.update(calc_val=st.session_state.phone_input))
 
-    # Clavier GÉANT 3 colonnes (style iPhone/Android)
     c1, c2, c3 = st.columns(3)
     btns = [("1","2","3"), ("4","5","6"), ("7","8","9"), ("+","0","-")]
     for row in btns:
@@ -139,9 +162,7 @@ elif st.session_state.mode == "dict":
     if st.button("🏠 ACCUEIL"): st.session_state.mode = "accueil"; st.rerun()
     m = st.text_input("Mot :")
     if st.button("🌟 VOIR"):
-        if m: 
-            res = ia_magique(m, "dico")
-            st.write(f"### {res}"); parler(res)
+        if m: res = ia_magique(m, "dico"); st.write(f"### {res}"); parler(res)
 
 elif st.session_state.mode == "ia":
     if st.button("🏠 ACCUEIL"): st.session_state.mode = "accueil"; st.rerun()
