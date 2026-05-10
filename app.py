@@ -4,8 +4,13 @@ import base64
 import io
 import requests
 
-# --- 1. CONFIGURATION ---
-st.set_page_config(page_title="MONDE MAGIQUE 🎈", layout="wide", initial_sidebar_state="collapsed")
+# --- 1. INITIALISATION (CORRIGE L'ERREUR ATTRIBUTERROR) ---
+if 'mode' not in st.session_state: st.session_state.mode = "jeu"
+if 'slide' not in st.session_state: st.session_state.slide = 1
+if 'chemin' not in st.session_state: st.session_state.chemin = []
+
+# --- 2. CONFIGURATION PAGE ---
+st.set_page_config(page_title="FÊTE MAGIQUE 🎈", layout="wide", initial_sidebar_state="collapsed")
 
 # Récupération de la clé Mistral
 try:
@@ -13,7 +18,7 @@ try:
 except:
     MISTRAL_API_KEY = None
 
-# --- 2. IMPORT DES UNIVERS ---
+# --- 3. IMPORT DES UNIVERS ---
 try:
     from univers.ecole import ECOLE_DATA
     from univers.nature import NATURE_DATA
@@ -22,7 +27,7 @@ try:
 except:
     ECOLE_DATA = NATURE_DATA = MONDE_DATA = JEUX_DATA = {}
 
-# --- 3. LOGIQUE IA ---
+# --- 4. LOGIQUE IA ---
 def ia_magique(prompt, mode="doudou"):
     if not MISTRAL_API_KEY: return "Clé magique ?"
     system_instruction = "Tu es un doudou gentil. Phrases très courtes."
@@ -34,74 +39,70 @@ def ia_magique(prompt, mode="doudou"):
         return response.json()['choices'][0]['message']['content']
     except: return "Le doudou dort..."
 
-# --- 4. DESIGN SPECIAL BÉBÉ & MOBILE (RÉPARE LES BOGUES) ---
+# --- 5. DESIGN "GRANDE FÊTE" (BALLONS, ÉTOILES, CONFETTIS) ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
     
-    /* FOND DÉGRADÉ MAGIQUE */
+    /* FOND ARC-EN-CIEL DOUX */
     .stApp { 
-        background: linear-gradient(180deg, #E0F7FA 0%, #FFF9C4 100%); 
+        background: linear-gradient(135deg, #FFDEE9 0%, #B5FFFC 100%); 
     }
 
-    /* NETTOYAGE DES MARGES POUR TÉLÉPHONE */
-    .block-container {
-        padding-top: 2rem !important;
-        padding-bottom: 5rem !important;
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
-    }
-
-    /* TITRE GÉANT */
+    /* TITRE MAGIQUE GÉANT */
     .titre-enfant { 
         text-align: center; 
         font-family: 'Fredoka One', cursive !important;
         color: #9575CD !important; 
-        font-size: 45px !important;
-        text-shadow: 3px 3px 0px white;
+        font-size: 50px !important;
+        text-shadow: 4px 4px 0px white;
+        margin-top: -20px;
         margin-bottom: 20px;
     }
 
-    /* RÉPARATION DES BOUTONS (FORCE LE TEXTE À RESTER DEDANS) */
+    /* BOUTONS GÉANTS POUR TÉLÉPHONE */
     .stButton > button { 
         background: white !important; 
         border: 5px solid #9575CD !important; 
-        border-radius: 30px !important; 
+        border-radius: 40px !important; 
         color: #5E35B1 !important; 
         font-family: 'Fredoka One', cursive !important; 
-        font-size: 20px !important; 
-        padding: 15px 10px !important;
-        min-height: 90px !important; /* Bouton bien haut pour les doigts */
+        font-size: 24px !important; 
+        min-height: 100px !important; 
         width: 100% !important; 
-        box-shadow: 0px 8px 0px #D1C4E9 !important; 
-        white-space: normal !important; /* Empêche le texte de dépasser sur le côté */
-        line-height: 1.2 !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        margin-bottom: 15px !important;
+        box-shadow: 0px 10px 0px #D1C4E9 !important; 
+        white-space: normal !important;
+        margin-bottom: 20px !important;
     }
 
     .stButton > button:active {
-        transform: translateY(6px);
+        transform: translateY(8px);
         box-shadow: 0px 2px 0px #D1C4E9 !important;
     }
 
-    /* DÉCO : BALLONS ANIMÉS */
-    .ballon-deco {
-        position: fixed; font-size: 40px; z-index: -1; animation: float 5s ease-in-out infinite;
+    /* --- DÉCORATIONS ANIMÉES --- */
+    .ballon { position: fixed; font-size: 50px; z-index: 0; animation: monte 10s linear infinite; opacity: 0.7; }
+    .etoile { position: fixed; font-size: 30px; z-index: 0; animation: brille 2s ease-in-out infinite; opacity: 0.8; }
+    
+    @keyframes monte {
+        0% { transform: translateY(100vh) rotate(0deg); }
+        100% { transform: translateY(-100vh) rotate(20deg); }
     }
-    @keyframes float {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-20px); }
+    @keyframes brille {
+        0%, 100% { transform: scale(1); opacity: 0.5; }
+        50% { transform: scale(1.3); opacity: 1; }
     }
 
-    /* CACHER LE MENU STREAMLIT */
+    /* CACHER LES TRUCS MOCHES */
     #MainMenu, footer, header {visibility: hidden;}
+    .block-container { padding-top: 2rem !important; }
     </style>
-    
-    <div class="ballon-deco" style="top:10%; right:10%;">🎈</div>
-    <div class="ballon-deco" style="bottom:10%; left:5%; animation-delay: 2s;">🌟</div>
+
+    <div class="ballon" style="left:5%; animation-duration: 12s;">🎈</div>
+    <div class="ballon" style="left:85%; animation-duration: 8s;">🎈</div>
+    <div class="etoile" style="top:15%; left:10%;">⭐</div>
+    <div class="etoile" style="top:40%; right:15%;">✨</div>
+    <div class="etoile" style="bottom:20%; left:20%;">🌟</div>
     """, unsafe_allow_html=True)
 
 def parler(txt):
@@ -111,24 +112,24 @@ def parler(txt):
     b64 = base64.b64encode(fp.getvalue()).decode()
     st.markdown(f'<audio autoplay src="data:audio/mp3;base64,{b64}">', unsafe_allow_html=True)
 
-# --- 5. INTERFACE ---
+# --- 6. INTERFACE DE JEU ---
 
 st.markdown("<h1 class='titre-enfant'>MONDE MAGIQUE</h1>", unsafe_allow_html=True)
 
-# Navigation principale en gros boutons (2 par ligne)
-c1, c2 = st.columns(2)
-with c1:
+# Menu du haut (Gros boutons 2x2)
+m1, m2 = st.columns(2)
+with m1:
     if st.button("📚 ÉCOLE"): st.session_state.mode, st.session_state.slide, st.session_state.chemin = "jeu", 1, []
     if st.button("📖 DICO"): st.session_state.mode = "dict"
-with c2:
+with m2:
     if st.button("🧮 CALCUL"): st.session_state.mode = "calc"
     if st.button("🤖 DOUDOU"): st.session_state.mode = "ia"
 
-st.markdown("---")
+st.markdown("<br>", unsafe_allow_html=True)
 
-# --- CONTENU DES UNIVERS ---
+# --- CONTENU DYNAMIQUE ---
 if st.session_state.mode == "jeu":
-    # Les 3 Univers principaux
+    # 3 Univers principaux
     u1, u2, u3 = st.columns(3)
     if u1.button("🦁 NATURE"): st.session_state.slide, st.session_state.chemin = 2, []
     if u2.button("🌍 MONDE"): st.session_state.slide, st.session_state.chemin = 3, []
@@ -139,23 +140,21 @@ if st.session_state.mode == "jeu":
     for d in st.session_state.chemin: contenu = contenu.get(d, {})
 
     if st.session_state.chemin:
-        if st.button("⬅️ RETOUR"): st.session_state.chemin.pop(); st.rerun()
+        if st.button("⬅️ RETOUR"): 
+            st.session_state.chemin.pop()
+            st.rerun()
 
-    st.write(f"### ✨ {st.session_state.chemin[-1] if st.session_state.chemin else ''}")
-
-    # Affichage des dossiers et objets en 2 colonnes pour téléphone
+    # Grille de contenu (2 colonnes pour téléphone)
     if isinstance(contenu, dict):
         items = list(contenu.items())
         for i in range(0, len(items), 2):
             col_a, col_b = st.columns(2)
-            # Premier item de la ligne
             with col_a:
                 k, v = items[i]
                 if isinstance(v, dict):
                     if st.button(f"📁 {k}"): st.session_state.chemin.append(k); st.rerun()
                 else:
                     if st.button(f"🔊 {k}"): parler(v)
-            # Deuxième item de la ligne (s'il existe)
             if i + 1 < len(items):
                 with col_b:
                     k, v = items[i+1]
@@ -164,7 +163,6 @@ if st.session_state.mode == "jeu":
                     else:
                         if st.button(f"🔊 {k}"): parler(v)
 
-# --- AUTRES MODES ---
 elif st.session_state.mode == "calc":
     if st.button("⬅️ RETOUR"): st.session_state.mode = "jeu"
     n = st.number_input("Nombre :", 0, 10)
