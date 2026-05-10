@@ -4,96 +4,94 @@ import base64
 import io
 
 # --- 1. CONFIGURATION ---
-st.set_page_config(page_title="Génies", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="L'EMPIRE", layout="wide", initial_sidebar_state="collapsed")
 
-# --- 2. IMPORTATIONS DES UNIVERS ---
+# --- 2. IMPORTATION DES UNIVERS ---
 try:
     from univers.ecole import ECOLE_DATA
     from univers.nature import NATURE_DATA
     from univers.monde import MONDE_DATA
     from univers.jeux import JEUX_DATA
-    UNIVERS = [ECOLE_DATA, NATURE_DATA, MONDE_DATA, JEUX_DATA]
-except Exception as e:
-    st.error("Assure-toi que le dossier 'univers' contient bien les 4 fichiers .py")
-    UNIVERS = [{}, {}, {}, {}]
+except:
+    st.error("Crée les fichiers dans le dossier /univers !")
 
-# --- 3. DESIGN "CLEAN MOBILE" ---
+# --- 3. DESIGN MOBILE (NÉON ET DOSSIERS) ---
 st.markdown("""
     <style>
-    #MainMenu, header, footer {visibility: hidden;}
     .stApp { background-color: #000; }
+    .titre-titan { text-align: center; color: #00FBFF; font-size: 30px; font-weight: 900; text-shadow: 0 0 10px #00FBFF; }
     
-    /* Titre Minimaliste */
-    .titre-simple {
-        text-align: center; color: white; font-size: 28px !important;
-        font-weight: 700; margin-bottom: 20px; letter-spacing: 1px;
+    /* Boutons Dossiers */
+    .btn-dossier button {
+        background: #111 !important; border: 2px solid #333 !important;
+        height: 120px !important; font-size: 22px !important; border-radius: 25px !important;
+    }
+    
+    /* Boutons Objets (dans les dossiers) */
+    .btn-objet button {
+        background: linear-gradient(135deg, #00FBFF, #0077FF) !important;
+        height: 100px !important; font-size: 20px !important; border-radius: 20px !important;
+        color: white !important;
     }
 
-    /* Boutons de Navigation (Cercles) */
-    .nav-box { display: flex; justify-content: center; gap: 20px; margin-bottom: 30px; }
-    
-    /* Boutons de Contenu (Massifs) */
-    .stButton > button {
-        width: 100% !important; height: 90px !important;
-        font-size: 20px !important; font-weight: 800 !important;
-        border-radius: 20px !important; border: none !important;
-        background: #1A1A1A !important; color: white !important;
-        margin-bottom: 10px !important;
-    }
-    
-    /* Couleurs de sélection */
-    .btn-active button { background: #00FBFF !important; color: black !important; border: 2px solid white !important; }
-    
-    .stButton > button:active { transform: scale(0.95); background: white !important; color: black !important; }
-    
-    h3 { color: #555; text-transform: uppercase; font-size: 14px; text-align: center; }
+    .nav-bar { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 4. AUDIO ---
-def parler(txt):
-    try:
-        tts = gTTS(text=str(txt), lang='fr')
-        fp = io.BytesIO()
-        tts.write_to_fp(fp)
-        b64 = base64.b64encode(fp.getvalue()).decode()
-        st.markdown(f'<audio autoplay src="data:audio/mp3;base64,{b64}">', unsafe_allow_html=True)
-    except: pass
-
-# --- 5. LOGIQUE ---
+# --- 4. ÉTATS DE NAVIGATION ---
 if 'slide' not in st.session_state: st.session_state.slide = 1
+if 'dossier' not in st.session_state: st.session_state.dossier = None
 
-st.markdown("<div class='titre-simple'>L'EMPIRE DES GÉNIES</div>", unsafe_allow_html=True)
+def parler(txt):
+    tts = gTTS(text=str(txt), lang='fr')
+    fp = io.BytesIO()
+    tts.write_to_fp(fp)
+    b64 = base64.b64encode(fp.getvalue()).decode()
+    st.markdown(f'<audio autoplay src="data:audio/mp3;base64,{b64}">', unsafe_allow_html=True)
 
-# Navigation
+# --- 5. BARRE DE NAVIGATION ---
+st.markdown('<div class="nav-bar">', unsafe_allow_html=True)
 cols = st.columns(4)
 icons = ["📚", "🦁", "🌍", "🎁"]
 for i in range(4):
     with cols[i]:
-        is_active = st.session_state.slide == i+1
-        if is_active:
-            st.markdown("<div class='btn-active'>", unsafe_allow_html=True)
-        if st.button(icons[i], key=f"nav_{i}"):
+        if st.button(icons[i] if st.session_state.slide != i+1 else "●", key=f"n_{i}"):
             st.session_state.slide = i+1
+            st.session_state.dossier = None # On ferme le dossier quand on change d'univers
             st.rerun()
-        if is_active:
-            st.markdown("</div>", unsafe_allow_html=True)
 
-# Affichage des données
-data_actuelle = UNIVERS[st.session_state.slide - 1]
+# --- 6. LOGIQUE D'AFFICHAGE ---
+mapping = {1: ECOLE_DATA, 2: NATURE_DATA, 3: MONDE_DATA, 4: JEUX_DATA}
+data_actuelle = mapping[st.session_state.slide]
 
-for section, items in data_actuelle.items():
-    st.markdown(f"<h3>{section}</h3>", unsafe_allow_html=True)
+st.markdown("<h1 class='titre-titan'>🧠 CERVEAU CENTRAL</h1>", unsafe_allow_html=True)
+
+# SI AUCUN DOSSIER N'EST OUVERT : On affiche les dossiers
+if st.session_state.dossier is None:
+    st.markdown("<div class='btn-dossier'>", unsafe_allow_html=True)
+    for nom_dossier in data_actuelle.keys():
+        if st.button(f"📂 {nom_dossier}", key=f"fold_{nom_dossier}"):
+            st.session_state.dossier = nom_dossier
+            st.rerun()
+    st.markdown("</div>", unsafe_allow_html=True)
+
+# SI UN DOSSIER EST OUVERT : On affiche le contenu
+else:
+    if st.button("⬅️ RETOUR", key="back"):
+        st.session_state.dossier = None
+        st.rerun()
     
-    # Gestion automatique Liste ou Dictionnaire
-    if isinstance(items, list):
-        for item in items:
-            if st.button(item, key=f"btn_{item}"):
-                parler(item)
-    else:
-        for k, v in items.items():
-            if st.button(k, key=f"btn_{k}"):
-                parler(v)
-                # Effets spéciaux pour le slide JEUX
-                if "CADEAU" in k or "MAGIE" in k: st.snow()
-                if "BALLONS" in k or "FÊTE" in k: st.balloons()
+    st.subheader(f"Dossier : {st.session_state.dossier}")
+    st.markdown("<div class='btn-objet'>", unsafe_allow_html=True)
+    
+    items = data_actuelle[st.session_state.dossier]
+    
+    # On affiche les boutons à l'intérieur
+    for k, v in (items.items() if isinstance(items, dict) else enumerate(items)):
+        label = k if isinstance(items, dict) else v
+        audio = v if isinstance(items, dict) else v
+        if st.button(label, key=f"item_{label}"):
+            parler(audio)
+            if "BALLONS" in label.upper(): st.balloons()
+            if "MAGIE" in label.upper(): st.snow()
+    st.markdown("</div>", unsafe_allow_html=True)
