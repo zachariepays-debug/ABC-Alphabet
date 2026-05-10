@@ -1,4 +1,4 @@
-# DOSSIER ÉCOLE - VERSION TITAN (ORDRE ALPHABÉTIQUE ET NUMÉRIQUE)
+# DOSSIER ÉCOLE - VERSION ENCYCLOPÉDIE COMPLÈTE
 ECOLE_DATA = {
     "🔢 COMPTER (0 à 100)": [str(i) for i in range(101)],
     
@@ -8,6 +8,32 @@ ECOLE_DATA = {
         "U": "U", "V": "V", "W": "W", "X": "X", "Y": "Y", "Z": "Z"
     },
 
+    "🍎 TOUS LES FRUITS (A-Z)": {
+        "🍑 Abricot": "Abricot", "🍍 Ananas": "Ananas", "🍌 Banane": "Banane", "🫐 Cassis": "Cassis",
+        "🍒 Cerise": "Cerise", "🍋 Citron": "Citron", "🍋 Citron Vert": "Lime", " Clémentine": "Clémentine",
+        "🏺 Datte": "Datte", "🍮 Figue": "Figue", "🍓 Fraise": "Fraise", "🍓 Framboise": "Framboise",
+        "🌵 Fruit du dragon": "Pitaya", "🍇 Fruit de la passion": "Maracudja", "🍈 Goyave": "Goyave",
+        "🍉 Grenade": "Grenade", "🔴 Groseille": "Groseille", "🥝 Kiwi": "Kiwi", "🎈 Litchi": "Litchi",
+        "🥭 Mangue": "Mangue", "🍈 Melon": "Melon", "🫐 Mûre": "Mûre", "🫐 Myrtille": "Myrtille",
+        "🥥 Noix de coco": "Noix de coco", "🍊 Orange": "Orange", "🍊 Pamplemousse": "Pamplemousse",
+        "🍈 Papaye": "Papaye", "🍉 Pastèque": "Pastèque", "🍑 Pêche": "Pêche", "🍐 Poire": "Poire",
+        "🍎 Pomme": "Pomme", "🍏 Pomme Verte": "Pomme Granny Smith", "🍇 Raisin": "Raisin"
+    },
+
+    "🥕 TOUS LES LÉGUMES (A-Z)": {
+        "🧄 Ail": "Ail", "🌵 Artichaut": "Artichaut", "🎋 Asperge": "Asperge", "🍆 Aubergine": "Aubergine",
+        "🌿 Basilic": "Basilic", "🔴 Betterave": "Betterave", "🥬 Blette": "Blette", "🥦 Brocoli": "Brocoli",
+        "🥕 Carotte": "Carotte", "🌿 Céleri": "Céleri", "🍄 Champignon": "Champignon de Paris",
+        "🥦 Chou": "Chou", "🥦 Chou-fleur": "Chou-fleur", "🥦 Chou de Bruxelles": "Chou de Bruxelles",
+        "🎃 Citrouille": "Citrouille", "🥒 Concombre": "Concombre", "🥒 Courgette": "Courgette",
+        "🥬 Épinards": "Épinards", "🌿 Fenouil": "Fenouil", "🫛 Fève": "Fève", "🫚 Gingembre": "Gingembre",
+        "🫛 Haricot vert": "Haricot vert", "🫘 Haricot rouge": "Haricot rouge", "🫘 Lentilles": "Lentilles",
+        "🌽 Maïs": "Maïs", "🧅 Oignon": "Oignon", "🌿 Persil": "Persil", "🫛 Petit pois": "Petit pois",
+        "🫑 Poivron": "Poivron", "🥬 Poireau": "Poireau", "🥔 Pomme de terre": "Pomme de terre",
+        "🎃 Potiron": "Potiron", "🔴 Radis": "Radis", "🥗 Salade": "Salade", "🥔 Topinambour": "Topinambour",
+        "🍅 Tomate": "Tomate"
+    },
+
     "📐 FORMES & COULEURS": {
         "🔴 Rouge": "Rouge", "🔵 Bleu": "Bleu", "🟢 Vert": "Vert", "🟡 Jaune": "Jaune", 
         "🟠 Orange": "Orange", "🟣 Violet": "Violet", "⚫ Noir": "Noir", "⚪ Blanc": "Blanc",
@@ -15,25 +41,9 @@ ECOLE_DATA = {
         "💎 Losange": "Losange", "❤️ Cœur": "Cœur", "🟩 Rectangle": "Rectangle", "🟠 Ovale": "Ovale"
     },
 
-    "🍎 FRUITS (A à Z)": {
-        "🍑 Abricot": "Abricot", "🍍 Ananas": "Ananas", "🍌 Banane": "Banane", "🍒 Cerise": "Cerise", 
-        "🍋 Citron": "Citron", "🍮 Figue": "Figue", "🍓 Fraise": "Fraise", "🍇 Raisin": "Raisin", 
-        "🍓 Framboise": "Framboise", "🥝 Kiwi": "Kiwi", "🥭 Mangue": "Mangue", "🍈 Melon": "Melon", 
-        "🫐 Myrtille": "Myrtille", "🥥 Noix de coco": "Noix de coco", "🍊 Orange": "Orange", 
-        "🍉 Pastèque": "Pastèque", "🍑 Pêche": "Pêche", "🍐 Poire": "Poire", "🍎 Pomme": "Pomme"
-    },
-
-    "🥕 LÉGUMES (A à Z)": {
-        "🧄 Ail": "Ail", "🎋 Asperge": "Asperge", "🍆 Aubergine": "Aubergine", "🥦 Brocoli": "Brocoli", 
-        "🥕 Carotte": "Carotte", "🍄 Champignon": "Champignon", "🎃 Citrouille": "Citrouille", 
-        "🥒 Concombre": "Concombre", "🥒 Courgette": "Courgette", "🫛 Haricot": "Haricot vert", 
-        "🌽 Maïs": "Maïs", "🧅 Oignon": "Oignon", "🫛 Petit pois": "Petit pois", "🫑 Poivron": "Poivron", 
-        "🥔 Pomme de terre": "Pomme de terre", "🔴 Radis": "Radis", "🥗 Salade": "Salade", "🍅 Tomate": "Tomate"
-    },
-
     "➕ CALCULS (DOUBLES)": {
         "1 + 1": "2", "2 + 2": "4", "3 + 3": "6", "4 + 4": "8", "5 + 5": "10",
-        "6 + 6": "12", "7 + 7": "14", "8 + 8": "16", "9 + 9": "18", "10 + 10": "20"
+        "10 + 10": "20", "20 + 20": "40", "50 + 50": "100"
     },
 
     "📅 CALENDRIER": {
