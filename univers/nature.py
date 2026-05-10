@@ -1,103 +1,81 @@
-# Fichier NATURE TITAN - Version Ultra-Blindée
+# ==========================================
+# UNIVERS : NATURE (Version Giga-Blindée)
+# ==========================================
+
 NATURE_DATA = {
-    "🦖 LES DINOSAURES (GÉANTS)": {
-        "🦖 T-REX": "Tyrannosaure Rex",
-        "🦕 DIPLO": "Diplodocus",
-        "🛡️ TRICÉ": "Tricératops",
-        "🕊️ PTÉRO": "Ptérodactyle",
-        "🦴 STÉGO": "Stégosaure",
-        "🌊 MOSA": "Mosasaurus",
-        "⚔️ RAPTOR": "Vélociraptor",
-        "🐊 SPINO": "Spinosaure",
-        "🔨 ANKYLO": "Ankylosaure",
-        "🦢 BRACHIO": "Brachiosaure",
-        "🥊 PACHY": "Pachycéphalosaure",
-        "🔥 CARNO": "Carnotaure",
-        "🐦 ARCHÉO": "Archaeopteryx",
-        "🛡️ PROTÉ": "Protocératops",
-        "🦒 GIGA": "Giganotosaure"
+    "🦖 LES DINOSAURES": {
+        "🦕 Les Géants": {
+            "Diplodocus 🦕": "Diplodocus", "Brachiosaurus 🦕": "Brachiosaure", 
+            "Titanosaurus 🦕": "Titanosaure", "Apatosaurus 🦕": "Apatosaure",
+            "Gigantosaurus 🦖": "Gigantosaure", "Argentinosaurus 🦕": "Argentinosaure"
+        },
+        "⚔️ Les Chasseurs": {
+            "Tyrannosaurus Rex 🦖": "Tyrannosaure", "Velociraptor 🦅": "Vélociraptor", 
+            "Spinosaurus 🐊": "Spinosaure", "Allosaurus 🦖": "Allosaure",
+            "Carnotaurus 🐂": "Carnotaure", "Baryonyx 🐊": "Baryonyx"
+        },
+        "🛡️ Les Cuirassés": {
+            "Triceratops 🐂": "Tricératops", "Stegosaurus 🛡️": "Stégosaure", 
+            "Ankylosaurus 🔨": "Ankylosaure", "Parasaurolophus 🎺": "Parasaurolophus",
+            "Iguanodon 🦎": "Iguanodon", "Pachycephalosaurus 🧠": "Pachycéphalosaure"
+        },
+        "🌊 Air et Mer": {
+            "Pterodactyl 🦅": "Ptérodactyle", "Mosasaurus 🦈": "Mosasaure", 
+            "Plesiosaurus 🐍": "Plésiosaure", "Pteranodon 🦅": "Ptéranodon"
+        }
     },
-    
-    "🦁 LA SAVANE & JUNGLE": {
-        "🦁 LION": "Lion",
-        "🐯 TIGRE": "Tigre",
-        "🐘 ÉLÉPHANT": "Éléphant",
-        "🦒 GIRAFE": "Girafe",
-        "🦓 ZÈBRE": "Zèbre",
-        "🐒 SINGE": "Singe",
-        "🦍 GORILLE": "Gorille",
-        "🦛 HIPPO": "Hippopotame",
-        "🦏 RHINO": "Rhinocéros",
-        "🐆 GUÉPARD": "Guépard",
-        "🐆 LÉOPARD": "Léopard",
-        "🐊 CROCO": "Crocodile",
-        "🐍 SERPENT": "Serpent",
-        "🐪 CHAMEAU": "Chameau",
-        "🐫 DROMADAIRE": "Dromadaire",
-        "🦘 KANGOUROU": "Kangourou",
-        "🐼 PANDA": "Panda",
-        "🐨 KOALA": "Koala",
-        "🦥 PARESSEUX": "Paresseux",
-        "🦩 FLAMANT": "Flamant Rose",
-        "🦜 PERROQUET": "Perroquet",
-        "🦚 PAON": "Paon"
+
+    "🦁 ANIMAUX SAUVAGES": {
+        "🌍 Savane et Afrique": {
+            "Lion 🦁": "Lion", "Lionne 🦁": "Lionne", "Éléphant 🐘": "Éléphant", 
+            "Girafe 🦒": "Girafe", "Zèbre 🦓": "Zèbre", "Guépard 🐆": "Guépard", 
+            "Léopard 🐆": "Léopard", "Hyène 🐺": "Hyène", "Rhinocéros 🦏": "Rhinocéros", 
+            "Hippopotame 🦛": "Hippopotame", "Gorille 🦍": "Gorille", "Chimpanzé 🐒": "Chimpanzé",
+            "Autruche 🐦": "Autruche", "Suricate 🐾": "Suricate", "Gazelle 🦌": "Gazelle"
+        },
+        "❄️ Banquise et Froid": {
+            "Ours Polaire 🐻‍❄️": "Ours Polaire", "Pingouin 🐧": "Pingouin", 
+            "Manchot 🐧": "Manchot", "Morse 🦭": "Morse", "Phoque 🦭": "Phoque", 
+            "Renne 🦌": "Renne", "Loup 🐺": "Loup", "Renard Polaire 🦊": "Renard Polaire"
+        },
+        "🎋 Jungle et Forêt": {
+            "Tigre 🐯": "Tigre", "Panda 🐼": "Panda", "Paresseux 🦥": "Paresseux", 
+            "Koala 🐨": "Koala", "Kangourou 🦘": "Kangourou", "Écureuil 🐿️": "Écureuil", 
+            "Hérisson 🦔": "Hérisson", "Cerf 🦌": "Cerf", "Sanglier 🐗": "Sanglier"
+        }
     },
-    
-    "🐬 L'OCÉAN PROFOND": {
-        "🐬 DAUPHIN": "Dauphin",
-        "🐋 BALEINE": "Baleine",
-        "🦈 REQUIN": "Requin",
-        "🐙 POULPE": "Poulpe",
-        "🐢 TORTUE": "Tortue marine",
-        "🦀 CRABE": "Crabe",
-        "🦑 CALAMAR": "Calamar",
-        "🐠 POISSON": "Poisson Tropical",
-        "🐡 POISSON-LUNE": "Poisson globe",
-        "🦞 HOMARD": "Homard",
-        "🦐 CREVETTE": "Crevette",
-        "🐚 COQUILLAGE": "Coquillage",
-        "🦭 PHOQUE": "Phoque",
-        "🐧 PINGOUIN": "Manchot",
-        "🦦 LOUTRE": "Loutre",
-        "🐳 ORQUE": "Orque",
-        "🌊 RAIE": "Raie Manta",
-        "🐎 HIPPOCAMPE": "Hippocampe",
-        "⭐ ÉTOILE": "Étoile de mer",
-        "🪼 MÉDUSE": "Méduse"
+
+    "🌊 SOUS L'OCÉAN": {
+        "🦈 Les Gros": {
+            "Baleine 🐋": "Baleine", "Grand Requin Blanc 🦈": "Requin Blanc", 
+            "Orque 🐬": "Orque", "Dauphin 🐬": "Dauphin", "Raie Manta 🌊": "Raie Manta",
+            "Requin Marteau 🦈": "Requin Marteau", "Narval 🦄": "Narval"
+        },
+        "🐠 Les Petits": {
+            "Poisson-clown 🐠": "Poisson-clown", "Hippocampe 🐎": "Hippocampe", 
+            "Méduse 🪼": "Méduse", "Étoile de mer ⭐": "Étoile de mer", 
+            "Pieuvre 🐙": "Pieuvre", "Crabe 🦀": "Crabe", "Crevette 🦐": "Crevette",
+            "Tortue de mer 🐢": "Tortue marine", "Anguille 🐍": "Anguille"
+        }
     },
-    
+
+    "🚜 LA FERME": {
+        "🐮 Les Animaux": {
+            "Vache 🐄": "Vache", "Taureau 🐂": "Taureau", "Veau 🐮": "Veau", 
+            "Cochon 🐷": "Cochon", "Mouton 🐑": "Mouton", "Chèvre 🐐": "Chèvre", 
+            "Cheval 🐎": "Cheval", "Âne 🫏": "Âne", "Poney 🐴": "Poney"
+        },
+        "🐔 La Basse-cour": {
+            "Poule 🐔": "Poule", "Coq 🐓": "Coq", "Poussin 🐥": "Poussin", 
+            "Canard 🦆": "Canard", "Oie 🪿": "Oie", "Dindon 🦃": "Dindon", 
+            "Lapin 🐰": "Lapin"
+        }
+    },
+
     "🐞 PETITES BÊTES": {
-        "🦋 PAPILLON": "Papillon",
-        "🐝 ABEILLE": "Abeille",
-        "🐞 COCCINELLE": "Coccinelle",
-        "🐜 FOURMI": "Fourmi",
-        "🕷️ ARAIGNÉE": "Araignée",
-        "🐛 CHENILLE": "Chenille",
-        "🐌 ESCARGOT": "Escargot",
-        "🦟 MOUSTIQUE": "Moustique",
-        "🦗 CRIQUET": "Criquet",
-        "🪲 SCARABÉE": "Scarabée",
-        "🦂 SCORPION": "Scorpion",
-        "🪱 VER": "Ver de terre",
-        "🐉 LIBELLULE": "Libellule",
-        "🪳 CACHALOT": "Cafard",
-        "🐝 FRELON": "Frelon"
-    },
-    
-    "🌲 FORÊT & CAMPAGNE": {
-        "🦊 RENARD": "Renard",
-        "🐺 LOUP": "Loup",
-        "🐻 OURS": "Ours",
-        "🦌 CERF": "Cerf",
-        "🐿️ ÉCUREUIL": "Écureuil",
-        "🦔 HÉRISSON": "Hérisson",
-        "🦉 HIBOU": "Hibou",
-        "🦇 CHAUVE-SOURIS": "Chauve-souris",
-        "🐰 LAPIN": "Lapin",
-        "🐗 SANGLIER": "Sanglier",
-        "🦝 RATON": "Raton laveur",
-        "🦨 MOUFETTE": "Mouffette",
-        "🦦 CASTOR": "Castor",
-        "🦅 AIGLE": "Aigle"
+        "Abeille 🐝": "Abeille", "Papillon 🦋": "Papillon", "Coccinelle 🐞": "Coccinelle", 
+        "Fourmi 🐜": "Fourmi", "Araignée 🕷️": "Araignée", "Sauterelle 🦗": "Sauterelle", 
+        "Escargot 🐌": "Escargot", "Chenille 🐛": "Chenille", "Scorpion 🦂": "Scorpion", 
+        "Libellule 🛸": "Libellule", "Mouche 🪰": "Mouche", "Moustique 🦟": "Moustique"
     }
 }
