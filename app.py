@@ -51,8 +51,29 @@ def parler(txt):
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+    
     .stApp { background: linear-gradient(135deg, #FFDEE9 0%, #B5FFFC 100%); }
-    .titre-enfant { text-align: center; font-family: 'Fredoka One'; color: #5E35B1; font-size: 40px; text-shadow: 2px 2px white; margin-bottom: 20px;}
+
+    /* TITRE ARC-EN-CIEL MAGIQUE */
+    .titre-enfant {
+        text-align: center;
+        font-family: 'Fredoka One', cursive;
+        font-size: 60px;
+        background: linear-gradient(to right, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3, #dd00f3);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-size: 400% 400%;
+        animation: rainbow 8s ease infinite;
+        margin-bottom: 20px;
+        font-weight: bold;
+    }
+
+    @keyframes rainbow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
     .stButton > button { 
         background: white !important; border: 4px solid #5E35B1 !important; border-radius: 25px !important; 
         color: #5E35B1 !important; font-family: 'Fredoka One' !important; font-size: 20px !important; 
@@ -70,7 +91,6 @@ if st.session_state.mode == "accueil":
     with c1:
         if st.button("🎓 APPRENTISSAGE"): st.session_state.mode, st.session_state.slide, st.session_state.chemin = "jeu", 1, []; st.rerun()
         if st.button("🤖 DOUDOU"): st.session_state.mode = "ia"; st.rerun()
-        # NOUVEAU BOUTON !
         if st.button("🗣️ MACHINE À PHRASES"): st.session_state.mode = "parleur"; st.rerun()
     with c2:
         if st.button("🧮 CALCULS"): st.session_state.mode = "calc"; st.rerun()
@@ -80,7 +100,7 @@ if st.session_state.mode == "accueil":
 elif st.session_state.mode == "parleur":
     if st.button("🏠 ACCUEIL"): st.session_state.mode = "accueil"; st.rerun()
     st.markdown("<h2 style='text-align:center; color:#5E35B1; font-family:Fredoka One;'>🗣️ LA MACHINE À PHRASES</h2>", unsafe_allow_html=True)
-    st.write("Écris quelque chose et j'al vais le dire tout haut !")
+    st.write("Écris quelque chose et je vais le dire tout haut !")
     
     phrase = st.text_area("Tape ta phrase ici :", height=150, placeholder="Exemple: Bonjour maman, je t'aime !")
     
@@ -90,7 +110,7 @@ elif st.session_state.mode == "parleur":
         else:
             st.warning("Écris d'abord un petit mot ! ✍️")
 
-# --- MODE APPRENTISSAGE (ECOLE, NATURE, MONDE, JEUX) ---
+# --- MODE APPRENTISSAGE ---
 elif st.session_state.mode == "jeu":
     col_nav1, col_nav2 = st.columns(2)
     with col_nav1:
