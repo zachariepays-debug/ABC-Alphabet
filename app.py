@@ -2,84 +2,103 @@ import streamlit as st
 from gtts import gTTS
 import base64
 import io
-import random
 
 # --- 1. CONFIGURATION ---
-st.set_page_config(page_title="MON SUPER JOUET", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="MONDE MAGIQUE 🎈", layout="wide", initial_sidebar_state="collapsed")
 
-# --- 2. IMPORTATION DES UNIVERS ---
+# --- 2. IMPORT DES UNIVERS ---
 try:
     from univers.ecole import ECOLE_DATA
     from univers.nature import NATURE_DATA
     from univers.monde import MONDE_DATA
     from univers.jeux import JEUX_DATA
 except:
-    st.error("Oups ! Les dossiers sont perdus !")
+    st.error("Oups ! Les doudous sont perdus !")
 
-# --- 3. DESIGN "BÉBÉ FLASHY" ---
-st.markdown("""
+# --- 3. DESIGN "MAGIQUE & POP" ---
+st.markdown(f"""
     <style>
-    /* Fond dégradé super joyeux */
-    .stApp { 
-        background: linear-gradient(135deg, #FFDEE9 0%, #B5FFFC 100%); 
-    }
-    
-    .titre-enfant { 
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+
+    /* Fond dégradé pastel animé */
+    .stApp {{ 
+        background: linear-gradient(-45deg, #FFD6E8, #C9F2FF, #D8FFF1, #FFF2B2);
+        background-size: 400% 400%;
+        animation: gradient 15s ease infinite;
+    }}
+
+    @keyframes gradient {{
+        0% {{ background-position: 0% 50%; }}
+        50% {{ background-position: 100% 50%; }}
+        100% {{ background-position: 0% 50%; }}
+    }}
+
+    .titre-enfant {{ 
         text-align: center; 
-        color: #FF00FF; 
-        font-size: 40px; 
-        font-weight: 900; 
-        text-shadow: 3px 3px 0px #FFF, 5px 5px 0px #00FBFF;
-        margin-bottom: 20px;
-        font-family: 'Comic Sans MS', cursive;
-    }
-    
-    /* Boutons de navigation (Icones du haut) */
-    .stButton > button {
-        transition: transform 0.2s;
-    }
-    .stButton > button:active {
-        transform: scale(0.9);
-    }
+        color: #FF69B4; 
+        font-size: 42px; 
+        font-family: 'Fredoka One', cursive;
+        text-shadow: 3px 3px 0px #FFF;
+        margin-bottom: 10px;
+    }}
 
-    /* Dossiers (Gros boutons ronds jaunes) */
-    .btn-dossier button {
-        background: #FFEB3B !important; 
-        border: 6px solid #FF9800 !important;
+    .slogan {{
+        text-align: center;
+        color: #7B68EE;
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 25px;
+    }}
+
+    /* Boutons Dossiers (Jaune Doux) */
+    .btn-dossier button {{
+        background: #FFF2B2 !important; 
+        border: 5px solid #FFCC00 !important;
         height: 120px !important; 
-        font-size: 26px !important; 
-        border-radius: 40px !important;
-        color: #E91E63 !important; 
-        margin-bottom: 15px !important;
-        box-shadow: 0px 8px 0px #FB8C00 !important;
-    }
-    
-    /* Objets (Boutons Arc-en-ciel qui flashent) */
-    .btn-objet:nth-child(4n+1) button { background: #FF4081 !important; border: 5px solid #F50057 !important; box-shadow: 0px 8px 0px #C51162 !important; }
-    .btn-objet:nth-child(4n+2) button { background: #00E676 !important; border: 5px solid #00C853 !important; box-shadow: 0px 8px 0px #1B5E20 !important; }
-    .btn-objet:nth-child(4n+3) button { background: #00B0FF !important; border: 5px solid #0091EA !important; box-shadow: 0px 8px 0px #01579B !important; }
-    .btn-objet:nth-child(4n+4) button { background: #AA00FF !important; border: 5px solid #D500F9 !important; box-shadow: 0px 8px 0px #4A148C !important; }
-
-    .btn-objet button {
-        height: 110px !important; 
         font-size: 28px !important; 
-        border-radius: 35px !important;
-        color: white !important; 
+        border-radius: 40px !important;
+        color: #FF5500 !important; 
         margin-bottom: 15px !important;
-        font-weight: bold !important;
-    }
+        box-shadow: 0px 10px 0px #FFB300 !important;
+        font-family: 'Fredoka One', cursive !important;
+    }}
+    
+    /* Objets Arc-en-ciel Pastel */
+    .btn-objet:nth-child(5n+1) button {{ background: #FFD6E8 !important; border: 4px solid #FF85B3 !important; box-shadow: 0px 8px 0px #FF5C9D !important; }}
+    .btn-objet:nth-child(5n+2) button {{ background: #C9F2FF !important; border: 4px solid #70D1F4 !important; box-shadow: 0px 8px 0px #3EADE2 !important; }}
+    .btn-objet:nth-child(5n+3) button {{ background: #D8FFF1 !important; border: 4px solid #85E3B3 !important; box-shadow: 0px 8px 0px #5BCB8E !important; }}
+    .btn-objet:nth-child(5n+4) button {{ background: #E5D9FF !important; border: 4px solid #B194FF !important; box-shadow: 0px 8px 0px #8A63FF !important; }}
+    .btn-objet:nth-child(5n+5) button {{ background: #FFF2B2 !important; border: 4px solid #F4D03F !important; box-shadow: 0px 8px 0px #D4AC0D !important; }}
 
-    /* Bouton RETOUR (Gros bouton orange) */
-    .btn-retour button {
-        background: #FF6D00 !important; 
+    .btn-objet button {{
+        height: 100px !important; 
+        font-size: 26px !important; 
+        border-radius: 35px !important;
+        color: #444 !important; 
+        margin-bottom: 15px !important;
+        font-family: 'Fredoka One', cursive !important;
+    }}
+
+    .btn-retour button {{
+        background: #FF69B4 !important; 
         color: white !important;
         height: 70px !important; 
-        border-radius: 60px !important;
-        font-size: 22px !important;
-        border: 4px solid #FFF !important;
-    }
+        border-radius: 50px !important;
+        font-size: 20px !important;
+        border: 4px solid white !important;
+        box-shadow: 0px 5px 15px rgba(255, 105, 180, 0.4) !important;
+    }}
     
-    .nav-bar { background: white; padding: 10px; border-radius: 50px; display: flex; justify-content: center; gap: 10px; box-shadow: 0px 5px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .nav-bar {{ 
+        background: rgba(255,255,255,0.7); 
+        padding: 15px; 
+        border-radius: 60px; 
+        display: flex; 
+        justify-content: center; 
+        gap: 15px; 
+        box-shadow: 0px 10px 30px rgba(0,0,0,0.05); 
+        margin-bottom: 30px; 
+    }}
     </style>
     """, unsafe_allow_html=True)
 
@@ -95,13 +114,13 @@ def parler(txt):
 if 'slide' not in st.session_state: st.session_state.slide = 1
 if 'chemin' not in st.session_state: st.session_state.chemin = []
 
-# Navigation du haut
+# Navigation
 st.markdown('<div class="nav-bar">', unsafe_allow_html=True)
 cols = st.columns(4)
 icons = ["📚", "🦁", "🌍", "🎁"]
 for i in range(4):
     with cols[i]:
-        if st.button(icons[i], key=f"n_{i}"):
+        if st.button(icons[i], key=f"nav_{i}"):
             st.session_state.slide = i+1
             st.session_state.chemin = []
             st.rerun()
@@ -115,19 +134,20 @@ for dossier in st.session_state.chemin:
 # Affichage
 if len(st.session_state.chemin) > 0:
     st.markdown('<div class="btn-retour">', unsafe_allow_html=True)
-    if st.button("⬅️ ON REVIENT !", key="back"):
+    if st.button("💝 ON REVIENT !", key="back"):
         st.session_state.chemin.pop()
         st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown(f"<h1 class='titre-enfant'>{'⭐ ' + st.session_state.chemin[-1] if st.session_state.chemin else 'CHOISIS TON JEU !'}</h1>", unsafe_allow_html=True)
+st.markdown(f"<h1 class='titre-enfant'>{'✨ ' + st.session_state.chemin[-1] if st.session_state.chemin else 'MONDE MAGIQUE 🎈'}</h1>", unsafe_allow_html=True)
+st.markdown("<p class='slogan'>Jouer, découvrir, grandir 💖</p>", unsafe_allow_html=True)
 
-# Boutons Grid
+# Boutons
 if isinstance(contenu, dict):
     for nom, valeur in contenu.items():
         if isinstance(valeur, (dict, list)) and not isinstance(valeur, str):
             st.markdown('<div class="btn-dossier">', unsafe_allow_html=True)
-            if st.button(f"📂 {nom}", key=f"d_{nom}"):
+            if st.button(f"🐾 {nom}", key=f"d_{nom}"):
                 st.session_state.chemin.append(nom)
                 st.rerun()
             st.markdown('</div>', unsafe_allow_html=True)
