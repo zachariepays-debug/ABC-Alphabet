@@ -30,32 +30,28 @@ except:
 # --- 4. LOGIQUE IA ---
 def ia_magique(prompt, mode="doudou"):
     if not MISTRAL_API_KEY: return "Clé magique ?"
-    if mode == "doudou":
-        system = "Tu es Doudou, un petit ourson mimi. Parle comme un enfant de 3 ans. Phrases très courtes."
-    else:
-        system = "Tu es un dictionnaire simple. Donne UNIQUEMENT la définition du mot. Une seule phrase courte."
+    system = "Tu es un dictionnaire enfantin. Donne UNIQUEMENT la définition courte." if mode == "dico" else "Tu es Doudou, un ourson mimi."
     url = "https://api.mistral.ai/v1/chat/completions"
     headers = {"Authorization": f"Bearer {MISTRAL_API_KEY}"}
     data = {"model": "mistral-tiny", "messages": [{"role": "system", "content": system}, {"role": "user", "content": prompt}]}
     try:
         response = requests.post(url, json=data, headers=headers)
         return response.json()['choices'][0]['message']['content']
-    except: return "Doudou dort..."
+    except: return "Oups..."
 
 # --- 5. DESIGN ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
     .stApp { background: linear-gradient(135deg, #FFDEE9 0%, #B5FFFC 100%); }
-    .titre-enfant { text-align: center; font-family: 'Fredoka One', cursive !important; color: #5E35B1 !important; font-size: 45px !important; text-shadow: 3px 3px 0px white; margin-bottom: 10px; }
-    .stButton > button { background: white !important; border: 5px solid #5E35B1 !important; border-radius: 35px !important; color: #5E35B1 !important; font-family: 'Fredoka One', cursive !important; font-size: 22px !important; min-height: 90px !important; width: 100% !important; box-shadow: 0px 8px 0px #D1C4E9 !important; margin-bottom: 15px !important; }
-    .calc-screen { background: white; border: 4px solid #5E35B1; border-radius: 15px; padding: 15px; text-align: left; font-size: 35px; font-family: 'Fredoka One', cursive; color: #5E35B1; margin-bottom: 15px; min-height: 80px; display: flex; align-items: center; }
-    .ballon { position: fixed; font-size: 40px; z-index: 0; animation: monte 10s linear infinite; opacity: 0.5; }
-    @keyframes monte { 0% { transform: translateY(110vh); } 100% { transform: translateY(-110vh); } }
-    #MainMenu, footer, header {visibility: hidden;}
+    .titre-enfant { text-align: center; font-family: 'Fredoka One'; color: #5E35B1; font-size: 40px; text-shadow: 2px 2px white; }
+    .stButton > button { 
+        background: white !important; border: 4px solid #5E35B1 !important; border-radius: 25px !important; 
+        color: #5E35B1 !important; font-family: 'Fredoka One' !important; font-size: 20px !important; 
+        min-height: 80px !important; margin-bottom: 10px !important; box-shadow: 0px 5px 0px #D1C4E9 !important;
+    }
+    .calc-screen { background: white; border: 4px solid #5E35B1; border-radius: 15px; padding: 15px; text-align: left; font-size: 40px; color: #5E35B1; margin-bottom: 10px; min-height: 70px; }
     </style>
-    <div class="ballon" style="left:5%;">🎈</div>
-    <div class="ballon" style="left:85%; animation-delay: 5s%;">🎈</div>
     """, unsafe_allow_html=True)
 
 def parler(txt):
@@ -77,77 +73,78 @@ if st.session_state.mode == "accueil":
         if st.button("🧮 CALCULS"): st.session_state.mode = "calc"; st.rerun()
         if st.button("📖 DICO"): st.session_state.mode = "dict"; st.rerun()
 
-elif st.session_state.mode == "dict":
-    if st.button("🏠 ACCUEIL"): st.session_state.mode = "accueil"; st.rerun()
-    st.markdown("<h2 style='text-align:center; color:#5E35B1; font-family:Fredoka One;'>📖 LE DICO</h2>", unsafe_allow_html=True)
-    m = st.text_input("Écris un mot :")
-    if st.button("🌟 VOIR ET ÉCOUTER"):
-        if m:
-            res = ia_magique(m, "dico")
-            st.markdown(f"<div style='background:white; border-radius:20px; padding:20px; border:3px solid #5E35B1; color:#5E35B1; font-family:Fredoka One; font-size:20px; text-align:center;'>{res}</div>", unsafe_allow_html=True)
-            parler(res) # LA VOIX EST DE RETOUR !
-
-elif st.session_state.mode == "calc":
-    if st.button("🏠 ACCUEIL"): st.session_state.mode = "accueil"; st.session_state.calc_val = ""; st.rerun()
-    st.markdown(f"<div class='calc-screen'>{st.session_state.calc_val if st.session_state.calc_val else '0'}</div>", unsafe_allow_html=True)
-    c1, c2, c3, c4 = st.columns(4)
-    with c1:
-        if st.button("1"): st.session_state.calc_val += "1"; st.rerun()
-        if st.button("4"): st.session_state.calc_val += "4"; st.rerun()
-        if st.button("7"): st.session_state.calc_val += "7"; st.rerun()
-        if st.button("C"): st.session_state.calc_val = ""; st.rerun()
-    with c2:
-        if st.button("2"): st.session_state.calc_val += "2"; st.rerun()
-        if st.button("5"): st.session_state.calc_val += "5"; st.rerun()
-        if st.button("8"): st.session_state.calc_val += "8"; st.rerun()
-        if st.button("0"): st.session_state.calc_val += "0"; st.rerun()
-    with c3:
-        if st.button("3"): st.session_state.calc_val += "3"; st.rerun()
-        if st.button("6"): st.session_state.calc_val += "6"; st.rerun()
-        if st.button("9"): st.session_state.calc_val += "9"; st.rerun()
-        if st.button("="):
-            try:
-                res = eval(st.session_state.calc_val)
-                st.session_state.calc_val = str(res); parler(f"Ça fait {res}")
-            except: st.session_state.calc_val = ""; st.rerun()
-    with c4:
-        if st.button("+"): st.session_state.calc_val += "+"; st.rerun()
-        if st.button("-"): st.session_state.calc_val += "-"; st.rerun()
-        if st.button("🔊"): parler(st.session_state.calc_val)
-
-elif st.session_state.mode == "ia":
-    if st.button("🏠 ACCUEIL"): st.session_state.mode = "accueil"; st.rerun()
-    q = st.text_input("Parle à Doudou :")
-    if st.button("RÉPONDRE"):
-        if q:
-            res = ia_magique(q, "doudou")
-            st.info(res); parler(res)
-
 elif st.session_state.mode == "jeu":
-    if st.button("🏠 ACCUEIL"): st.session_state.mode = "accueil"; st.rerun()
-    u1, u2, u3 = st.columns(3)
-    if u1.button("🦁 NATURE"): st.session_state.slide, st.session_state.chemin = 2, []
-    if u2.button("🌍 MONDE"): st.session_state.slide, st.session_state.chemin = 3, []
-    if u3.button("🎁 JEUX"): st.session_state.slide, st.session_state.chemin = 4, []
+    # On n'affiche les gros onglets QUE si on est à la racine
+    if not st.session_state.chemin:
+        u1, u2, u3 = st.columns(3)
+        if u1.button("🦁 NATURE"): st.session_state.slide = 2; st.rerun()
+        if u2.button("🌍 MONDE"): st.session_state.slide = 3; st.rerun()
+        if u3.button("🎁 JEUX"): st.session_state.slide = 4; st.rerun()
+    
+    col_nav1, col_nav2 = st.columns([1,1])
+    with col_nav1:
+        if st.button("🏠 ACCUEIL"): st.session_state.mode = "accueil"; st.rerun()
+    with col_nav2:
+        if st.session_state.chemin:
+            if st.button("⬅️ RETOUR"): st.session_state.chemin.pop(); st.rerun()
+
     mapping = {1: ECOLE_DATA, 2: NATURE_DATA, 3: MONDE_DATA, 4: JEUX_DATA}
     contenu = mapping.get(st.session_state.slide, {})
     for d in st.session_state.chemin: contenu = contenu.get(d, {})
-    if st.session_state.chemin:
-        if st.button("⬅️ RETOUR"): st.session_state.chemin.pop(); st.rerun()
+
     if isinstance(contenu, dict):
         items = list(contenu.items())
         for i in range(0, len(items), 2):
             ca, cb = st.columns(2)
             with ca:
                 k, v = items[i]
-                if isinstance(v, dict):
-                    if st.button(f"📁 {k}"): st.session_state.chemin.append(k); st.rerun()
-                else:
-                    if st.button(f"🔊 {k}"): parler(v)
+                if st.button(f"{'📁' if isinstance(v, dict) else '🔊'} {k}"):
+                    if isinstance(v, dict): st.session_state.chemin.append(k); st.rerun()
+                    else: parler(v)
             if i + 1 < len(items):
                 with cb:
                     k, v = items[i+1]
-                    if isinstance(v, dict):
-                        if st.button(f"📁 {k}"): st.session_state.chemin.append(k); st.rerun()
-                    else:
-                        if st.button(f"🔊 {k}"): parler(v)
+                    if st.button(f"{'📁' if isinstance(v, dict) else '🔊'} {k}"):
+                        if isinstance(v, dict): st.session_state.chemin.append(k); st.rerun()
+                        else: parler(v)
+
+elif st.session_state.mode == "calc":
+    if st.button("🏠 QUITTER"): st.session_state.mode = "accueil"; st.session_state.calc_val = ""; st.rerun()
+    
+    # Zone de saisie téléphone + affichage
+    st.markdown(f"<div class='calc-screen'>{st.session_state.calc_val if st.session_state.calc_val else '0'}</div>", unsafe_allow_html=True)
+    val_clavier = st.text_input("Tape ici avec ton téléphone :", key="phone_input")
+    if val_clavier: st.session_state.calc_val = val_clavier # Permet d'écrire directement
+
+    # Clavier GÉANT 3 colonnes (style iPhone/Android)
+    c1, c2, c3 = st.columns(3)
+    btns = [("1","2","3"), ("4","5","6"), ("7","8","9"), ("+","0","-")]
+    for row in btns:
+        with c1: 
+            if st.button(row[0]): st.session_state.calc_val += row[0]; st.rerun()
+        with c2: 
+            if st.button(row[1]): st.session_state.calc_val += row[1]; st.rerun()
+        with c3: 
+            if st.button(row[2]): st.session_state.calc_val += row[2]; st.rerun()
+    
+    ca, cb = st.columns(2)
+    if ca.button("🗑️ EFFACER"): st.session_state.calc_val = ""; st.rerun()
+    if cb.button("⭐ ÉGAL"):
+        try:
+            res = eval(st.session_state.calc_val)
+            st.session_state.calc_val = str(res); parler(f"Ça fait {res}")
+        except: st.session_state.calc_val = ""; st.rerun()
+
+elif st.session_state.mode == "dict":
+    if st.button("🏠 ACCUEIL"): st.session_state.mode = "accueil"; st.rerun()
+    m = st.text_input("Mot :")
+    if st.button("🌟 VOIR"):
+        if m: 
+            res = ia_magique(m, "dico")
+            st.write(f"### {res}"); parler(res)
+
+elif st.session_state.mode == "ia":
+    if st.button("🏠 ACCUEIL"): st.session_state.mode = "accueil"; st.rerun()
+    q = st.text_input("Dis à Doudou :")
+    if st.button("RÉPONDRE"):
+        if q: res = ia_magique(q, "doudou"); st.info(res); parler(res)
