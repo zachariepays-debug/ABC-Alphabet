@@ -20,7 +20,7 @@ try:
     from univers.monde import MONDE_DATA
     from univers.jeux import JEUX_DATA
 except Exception as e:
-    st.error(f"Oups ! Il manque des fichiers dans le dossier univers.")
+    st.error(f"Oups ! Les dossiers sont perdus !")
     ECOLE_DATA = NATURE_DATA = MONDE_DATA = JEUX_DATA = {}
 
 # --- 3. LOGIQUE IA SÉCURISÉE (MISTRAL) ---
@@ -31,18 +31,17 @@ def demander_au_doudou(question):
     url = "https://api.mistral.ai/v1/chat/completions"
     headers = {"Authorization": f"Bearer {MISTRAL_API_KEY}"}
     
-    # LE VERROU DE SÉCURITÉ : On définit le rôle strict de l'IA ici
     data = {
         "model": "mistral-tiny",
         "messages": [
             {
                 "role": "system", 
-                "content": """Tu es un doudou magique protecteur pour de très jeunes enfants (2-5 ans). 
+                "content": """Tu es un doudou magique protecteur pour enfants de 3 ans. 
                 CONSIGNES DE SÉCURITÉ :
-                1. Utilise un langage doux, joyeux et extrêmement poli.
-                2. INTERDICTION TOTALE d'utiliser des mots vulgaires, violents ou complexes.
-                3. Si l'enfant pose une question inappropriée ou méchante, réponds : 'Oh, restons gentils comme des petits chats ! Dis-moi quelque chose de doux.'
-                4. Fais des phrases très courtes (max 15 mots)."""
+                1. Langage très doux, poli et joyeux.
+                2. AUCUN mot vulgaire ou violent.
+                3. Si la question est méchante, réponds : 'Soyons gentils comme des chatons !'
+                4. Phrases très courtes (10-15 mots max)."""
             },
             {"role": "user", "content": question}
         ]
@@ -51,9 +50,9 @@ def demander_au_doudou(question):
         response = requests.post(url, json=data, headers=headers)
         return response.json()['choices'][0]['message']['content']
     except:
-        return "Je fais un petit dodo, reviens plus tard mon petit chou !"
+        return "Je fais un dodo magique !"
 
-# --- 4. DESIGN ---
+# --- 4. DESIGN ARC-EN-CIEL ET TEXTE FONCÉ ---
 st.markdown(f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
@@ -65,45 +64,76 @@ st.markdown(f"""
     }}
     @keyframes gradient {{ 0% {{ background-position: 0% 50%; }} 50% {{ background-position: 100% 50%; }} 100% {{ background-position: 0% 50%; }} }}
     
-    .titre-enfant {{ text-align: center; color: #8A63FF !important; font-size: 40px; font-family: 'Fredoka One', cursive; text-shadow: 2px 2px 0px #FFFFFF; }}
+    /* TEXTE NOIR TRÈS LISIBLE */
+    .titre-enfant, .slogan, span, p, label, .stMarkdown, .stTextInput label, .stNumberInput label {{
+        color: #2C3E50 !important; 
+        font-family: 'Fredoka One', cursive !important;
+        font-weight: bold !important;
+        font-size: 20px;
+    }}
+
+    .titre-enfant {{ 
+        text-align: center; 
+        font-size: 45px !important; 
+        color: #8A63FF !important;
+        text-shadow: 2px 2px 0px #FFFFFF;
+        margin-bottom: 10px;
+    }}
+
+    /* BARRES D'ÉCRITURE ARC-EN-CIEL */
+    input {{
+        border: 4px solid !important;
+        border-image: linear-gradient(to right, #FF1493, #00BFFF, #00FF7F, #FFD700) 1 !important;
+        border-radius: 15px !important;
+        background-color: white !important;
+        color: black !important;
+        font-size: 22px !important;
+    }}
     
-    /* Boutons de Navigation (Haut) */
-    .btn-nav button {{
+    /* BOUTONS NAVIGATION HAUT */
+    .stButton > button {{
         background: #FFFFFF !important;
-        border: 3px solid #8A63FF !important;
+        border: 4px solid #8A63FF !important;
         border-radius: 20px !important;
         color: #8A63FF !important;
         font-family: 'Fredoka One', cursive !important;
-        font-size: 18px !important;
-        height: 60px !important;
-        width: 100% !important;
+        font-size: 20px !important;
+        height: 70px !important;
+        box-shadow: 0px 4px 0px #8A63FF !important;
     }}
 
-    /* Boutons Dossiers (Jaunes avec texte) */
+    /* BOUTONS DOSSIERS (JAUNES) */
     .btn-dossier button {{ 
         background: #FFF2B2 !important; 
         border: 5px solid #FFCC00 !important; 
-        height: 100px !important; 
-        border-radius: 30px !important; 
+        height: 110px !important; 
+        border-radius: 35px !important; 
         color: #D35400 !important; 
-        font-family: 'Fredoka One', cursive !important; 
-        font-size: 22px !important;
-        box-shadow: 0px 6px 0px #FFB300 !important; 
-        margin-bottom:10px; 
+        font-size: 26px !important;
+        box-shadow: 0px 8px 0px #FFB300 !important; 
+        margin-bottom:15px !important;
         width: 100% !important; 
     }}
     
-    /* Boutons Objets (Blancs avec texte) */
+    /* BOUTONS OBJETS (BLANCS) */
     .btn-objet button {{ 
         background: white !important; 
-        height: 80px !important; 
-        border-radius: 25px !important; 
+        height: 90px !important; 
+        border-radius: 30px !important; 
         color: #2C3E50 !important; 
-        font-family: 'Fredoka One', cursive !important; 
-        font-size: 20px !important;
-        margin-bottom:10px; 
-        border: 3px solid #EEE !important; 
+        font-size: 24px !important;
+        border: 4px solid #EEE !important; 
+        box-shadow: 0px 6px 0px #CCC !important;
+        margin-bottom:15px !important;
         width: 100% !important; 
+    }}
+
+    .btn-retour button {{
+        background: #FF1493 !important;
+        color: white !important;
+        font-size: 22px !important;
+        border-radius: 50px !important;
+        border: 4px solid white !important;
     }}
     </style>
     """, unsafe_allow_html=True)
@@ -115,55 +145,54 @@ def parler(txt):
     b64 = base64.b64encode(fp.getvalue()).decode()
     st.markdown(f'<audio autoplay src="data:audio/mp3;base64,{b64}">', unsafe_allow_html=True)
 
-# --- 5. ÉTATS ET NAVIGATION ---
+# --- 5. NAVIGATION ---
 if 'mode' not in st.session_state: st.session_state.mode = "jeu"
 if 'slide' not in st.session_state: st.session_state.slide = 1
 if 'chemin' not in st.session_state: st.session_state.chemin = []
 
-# Barre d'outils du haut (Modifiée avec Texte + Dessin)
-c1, c2, c3, c4 = st.columns([1, 1, 1, 1])
+# Barre du haut
+c1, c2, c3, c4 = st.columns(4)
 with c1:
-    if st.button("📚 ÉCOLE", key="nav_1"):
-        st.session_state.mode = "jeu"
-        st.session_state.slide = 1
-        st.session_state.chemin = []
+    if st.button("📚 ÉCOLE"):
+        st.session_state.mode, st.session_state.slide, st.session_state.chemin = "jeu", 1, []
 with c2: 
-    if st.button("🧮 CALCULS", key="nav_calc"): st.session_state.mode = "calc"
+    if st.button("🧮 CALCULS"): st.session_state.mode = "calc"
 with c3: 
-    if st.button("📖 MOTS", key="nav_dict"): st.session_state.mode = "dict"
+    if st.button("📖 MOTS"): st.session_state.mode = "dict"
 with c4: 
-    if st.button("🤖 DOUDOU IA", key="nav_ia"): st.session_state.mode = "ia"
+    if st.button("🤖 DOUDOU"): st.session_state.mode = "ia"
 
-st.write("---") # Petite séparation
+st.write("---")
 
-# --- AFFICHAGE ---
+# --- MODES ---
 if st.session_state.mode == "calc":
     st.markdown("<h1 class='titre-enfant'>Ma Calculatrice 🧮</h1>", unsafe_allow_html=True)
+    if st.button("⬅️ RETOUR"): st.session_state.mode = "jeu"
     n = st.number_input("Choisis un nombre :", 0, 10)
-    if st.button("ÉCOUTER LE NOMBRE"): parler(n)
+    if st.button("ÉCOUTER"): parler(n)
 
 elif st.session_state.mode == "dict":
     st.markdown("<h1 class='titre-enfant'>Mes Jolis Mots 📖</h1>", unsafe_allow_html=True)
-    mot = st.text_input("Écris un mot ici :")
+    if st.button("⬅️ RETOUR"): st.session_state.mode = "jeu"
+    mot = st.text_input("Écris un mot :")
     if mot: parler(f"C'est le mot {mot} !")
 
 elif st.session_state.mode == "ia":
     st.markdown("<h1 class='titre-enfant'>Doudou IA 🤖</h1>", unsafe_allow_html=True)
-    st.write("Pose une question gentille à ton doudou !")
-    question = st.text_input("Ta question :")
-    if st.button("PARLER AU DOUDOU"):
-        rep = demander_au_doudou(question)
-        st.info(rep)
+    if st.button("⬅️ RETOUR"): st.session_state.mode = "jeu"
+    q = st.text_input("Pose une question gentille :")
+    if st.button("PARLER"):
+        rep = demander_au_doudou(q)
+        st.success(rep)
         parler(rep)
 
 else:
-    # Navigation des univers (Lions, Monde, Cadeaux)
+    # Univers
     cols = st.columns(3)
-    titles = ["🦁 NATURE", "🌍 MONDE", "🎁 JEUX"]
-    for i, title in enumerate(titles):
-        if cols[i].button(title, key=f"subnav_{i}"):
-            st.session_state.slide = i + 2
-            st.session_state.chemin = []
+    btns = ["🦁 NATURE", "🌍 MONDE", "🎁 JEUX"]
+    for i, t in enumerate(btns):
+        if cols[i].button(t):
+            st.session_state.slide, st.session_state.chemin = i + 2, []
             st.rerun()
 
     mapping = {1: ECOLE_DATA, 2: NATURE_DATA, 3: MONDE_DATA, 4: JEUX_DATA}
@@ -171,13 +200,14 @@ else:
     for d in st.session_state.chemin: contenu = contenu[d]
 
     if st.session_state.chemin:
-        if st.button("⬅️ RETOUR"):
+        st.markdown('<div class="btn-retour">', unsafe_allow_html=True)
+        if st.button("⬅️ ON REVIENT !"):
             st.session_state.chemin.pop()
             st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown(f"<h1 class='titre-enfant'>{'✨ ' + st.session_state.chemin[-1] if st.session_state.chemin else 'MONDE MAGIQUE'}</h1>", unsafe_allow_html=True)
     
-    # Boutons avec Texte
     if isinstance(contenu, dict):
         for k, v in contenu.items():
             if isinstance(v, dict):
